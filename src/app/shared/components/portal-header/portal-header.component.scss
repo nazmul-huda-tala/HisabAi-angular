@@ -1,0 +1,77 @@
+.portal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+}
+
+.portal-header__brand {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.portal-header__logo {
+  font-weight: 700;
+  font-size: 18px;
+  color: #0f766e;
+}
+
+.portal-header__tag {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.portal-header__nav {
+  display: flex;
+  gap: 20px;
+
+  a {
+    color: #475569;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 6px 2px;
+    border-bottom: 2px solid transparent;
+
+    &.active,
+    &:hover {
+      color: #0f766e;
+      border-bottom-color: #0f766e;
+    }
+  }
+}
+
+.portal-header__user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.portal-header__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.portal-header__logout {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background: #fee2e2;
+  }
+}

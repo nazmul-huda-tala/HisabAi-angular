@@ -1,0 +1,113 @@
+<div class="form-card">
+  <!-- Header -->
+  <div class="form-header">
+    <div class="header-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+      </svg>
+    </div>
+    <div>
+      <h2>{{ isEditMode ? 'পণ্য সম্পাদনা করুন' : 'নতুন পণ্য যুক্ত করুন' }}</h2>
+      <p>পণ্যের সমস্ত তথ্য সঠিকভাবে পূরণ করুন</p>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div class="api-error" *ngIf="saveError()">{{ saveError() }}</div>
+
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <div class="form-grid">
+
+      <!-- Product Name -->
+      <div class="form-group full-width">
+        <label for="name">পণ্যের নাম <span class="required">*</span></label>
+        <input id="name" type="text" formControlName="name" placeholder="যেমন: সয়াবিন তেল ২ লিটার"
+               [class.error]="productForm.get('name')?.invalid && productForm.get('name')?.touched" />
+        <span class="error-msg" *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+          সঠিক নাম প্রদান করুন (নূন্যতম ২ অক্ষর)
+        </span>
+      </div>
+
+      <!-- SKU -->
+      <div class="form-group">
+        <label for="sku">প্রোডাক্ট কোড / SKU</label>
+        <input id="sku" type="text" formControlName="sku" placeholder="যেমন: OIL-002" />
+      </div>
+
+      <!-- Barcode -->
+      <div class="form-group">
+        <label for="barcode">বারকোড</label>
+        <input id="barcode" type="text" formControlName="barcode" placeholder="যেমন: 890100000002" />
+      </div>
+
+      <!-- Category -->
+      <div class="form-group">
+        <label for="categoryId">ক্যাটাগরি</label>
+        <select id="categoryId" formControlName="categoryId">
+          <option [ngValue]="null">ক্যাটাগরি নির্বাচন করুন</option>
+          <option *ngFor="let item of catalog.categories()" [ngValue]="item.id">{{ item.name }}</option>
+        </select>
+      </div>
+
+      <!-- Brand -->
+      <div class="form-group">
+        <label for="brandId">ব্র্যান্ড</label>
+        <select id="brandId" formControlName="brandId">
+          <option [ngValue]="null">ব্র্যান্ড নির্বাচন করুন</option>
+          <option *ngFor="let item of catalog.brands()" [ngValue]="item.id">{{ item.name }}</option>
+        </select>
+      </div>
+
+      <!-- Unit -->
+      <div class="form-group">
+        <label for="unit">ইউনিট <span class="required">*</span></label>
+        <select id="unit" formControlName="unit" [class.error]="productForm.get('unit')?.invalid && productForm.get('unit')?.touched">
+          <option value="" disabled>ইউনিট নির্বাচন করুন</option>
+          <option *ngFor="let item of units" [value]="item">{{ item }}</option>
+        </select>
+      </div>
+
+      <!-- Purchase Price -->
+      <div class="form-group">
+        <label for="costPrice">ক্রয় মূল্য (৳)</label>
+        <input id="costPrice" type="number" formControlName="costPrice" placeholder="0.00" min="0" />
+      </div>
+
+      <!-- Selling Price -->
+      <div class="form-group">
+        <label for="sellingPrice">বিক্রি মূল্য (৳) <span class="required">*</span></label>
+        <input id="sellingPrice" type="number" formControlName="sellingPrice" placeholder="0.00" min="0"
+               [class.error]="productForm.get('sellingPrice')?.invalid && productForm.get('sellingPrice')?.touched" />
+      </div>
+
+      <!-- Tax rate -->
+      <div class="form-group">
+        <label for="taxRate">ট্যাক্স হার (%)</label>
+        <input id="taxRate" type="number" formControlName="taxRate" placeholder="0" min="0" />
+      </div>
+
+      <!-- Reorder level -->
+      <div class="form-group">
+        <label for="reorderLevel">রিঅর্ডার লেভেল</label>
+        <input id="reorderLevel" type="number" formControlName="reorderLevel" placeholder="0" min="0" />
+      </div>
+
+      <!-- Active -->
+      <div class="form-group full-width">
+        <label><input type="checkbox" formControlName="active" /> সক্রিয় পণ্য</label>
+        <small>স্টক সংখ্যা এখানে দেওয়া যায় না — ক্রয় ও স্টক সমন্বয় থেকে স্বয়ংক্রিয়ভাবে হিসাব হয়।</small>
+      </div>
+
+    </div>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="onReset()">রিসেট</button>
+      <button type="submit" class="btn btn-primary" [disabled]="productForm.invalid || isSaving()">
+        {{ isSaving() ? 'সংরক্ষণ হচ্ছে...' : (isEditMode ? 'হালনাগাদ করুন' : 'পণ্য সংরক্ষণ করুন') }}
+      </button>
+    </div>
+  </form>
+</div>

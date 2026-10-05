@@ -1,0 +1,143 @@
+<section class="feature-page">
+
+  <!-- ===== Header ===== -->
+  <div class="feature-page__header anim-fade-up" style="--delay: 0ms">
+    <div>
+      <h2>খরচ</h2>
+      <p>ব্যবসার দৈনন্দিন খরচের তালিকা ও হিসাব এক জায়গায়।</p>
+    </div>
+    <a class="button-primary" routerLink="/expenses/new">
+      <span>নতুন খরচ</span>
+    </a>
+  </div>
+
+  <!-- ===== Metric Row ===== -->
+  <div class="metric-row">
+
+    <article class="metric-card anim-fade-up" style="--delay: 80ms">
+      <p>এই মাসের খরচ</p>
+      <strong>{{ formatTaka(totalThisMonth()) }}</strong>
+      <small>{{ totalCount() }} টি এন্ট্রি</small>
+    </article>
+
+    <article class="metric-card metric-card--warning anim-fade-up" style="--delay: 140ms">
+      <p>বাকি খরচ</p>
+      <strong>{{ formatTaka(totalDue()) }}</strong>
+      <small>এখনো পরিশোধ হয়নি</small>
+    </article>
+
+    <article class="metric-card metric-card--info anim-fade-up" style="--delay: 200ms">
+      <p>মোট এন্ট্রি</p>
+      <strong>{{ totalCount() }}</strong>
+      <small>Static demo রেকর্ড</small>
+    </article>
+
+  </div>
+
+  <!-- ===== Data Panel ===== -->
+  <div class="data-panel anim-fade-up" style="--delay: 260ms">
+
+    <div class="data-panel__toolbar">
+      <div class="toolbar-left">
+        <p>খরচের তালিকা</p>
+        <span class="toolbar-note">Demo data — ব্যাকএন্ড কানেকশন নেই</span>
+      </div>
+
+      <input
+        class="search-box"
+        type="search"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
+        placeholder="খাত / নোট খুঁজুন..."
+        aria-label="Search expenses"
+      />
+    </div>
+
+    <!-- Filter chips -->
+    <div class="filter-chips">
+      @for (f of statusFilters; track f.value) {
+        <button
+          type="button"
+          class="chip"
+          [class.chip--active]="statusFilter() === f.value"
+          (click)="statusFilter.set(f.value)"
+        >
+          {{ f.label }}
+        </button>
+      }
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>খরচ নং</th>
+            <th>তারিখ</th>
+            <th>খাত</th>
+            <th>মাধ্যম</th>
+            <th>পরিমাণ</th>
+            <th>অবস্থা</th>
+            <th class="text-right">একশন</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of filteredExpenses(); track item.id) {
+            <tr>
+
+              <td class="ref-cell">{{ item.expenseNo }}</td>
+
+              <td class="time-cell">{{ formatDateBn(item.date) }}</td>
+
+              <td class="category-cell">{{ item.category }}</td>
+
+              <td class="method-cell">{{ item.paymentMethod }}</td>
+
+              <td class="amount-cell">
+                <strong>{{ formatTaka(item.amount) }}</strong>
+              </td>
+
+              <td>
+                <span
+                  class="status"
+                  [class.status--warning]="item.status === 'due'"
+                >
+                  {{ statusLabels[item.status] }}
+                </span>
+              </td>
+
+              <td class="actions">
+                <a class="row-action" [routerLink]="['/expenses', item.id]">
+                  দেখুন
+                </a>
+                <a class="row-action" [routerLink]="['/expenses', item.id, 'edit']">
+                  সম্পাদনা
+                </a>
+              </td>
+
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7" class="empty-row">
+                <p>কোনো খরচ পাওয়া যায়নি।</p>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="data-panel__footer">
+      <span class="range-label">
+        {{ filteredExpenses().length }} / {{ totalCount() }} রেকর্ড দেখানো হচ্ছে
+      </span>
+      @if (searchTerm()) {
+        <button type="button" class="clear-button" (click)="clearSearch()">
+          <span>খুঁজা মুছুন</span>
+        </button>
+      }
+    </div>
+
+  </div>
+
+</section>

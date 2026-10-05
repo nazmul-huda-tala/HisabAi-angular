@@ -1,0 +1,123 @@
+<div class="auth-container">
+
+  <!-- 🟣 LEFT SIDE -->
+  <div class="auth-side">
+
+    <div class="brand-logo">
+      <span class="logo-icon">SK</span>
+      <span class="logo-text">Shop<span class="brand-accent">Khata</span></span>
+    </div>
+
+    <div class="side-content">
+      <h1>Welcome Back 👋</h1>
+      <p class="side-desc">
+        Sign in to continue managing your account, projects, and everything in one place.
+      </p>
+
+      <!-- 📊 Stats -->
+      <div class="stats-row">
+        <div class="stat-box">
+          <span class="stat-num">10K+</span>
+          <span class="stat-label">Active Users</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num">99.9%</span>
+          <span class="stat-label">Uptime</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num">4.9★</span>
+          <span class="stat-label">Rating</span>
+        </div>
+      </div>
+
+      <!-- 💬 Testimonial -->
+      <div class="testimonial">
+        <p class="quote">
+          "The smoothest platform we've ever used. Setup took minutes and the experience is flawless."
+        </p>
+        <div class="quote-author">
+          <div class="avatar">A</div>
+          <div>
+            <strong>Arif Hossain</strong>
+            <span>Product Manager</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🎨 Decorative blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- ⚪ RIGHT SIDE -->
+  <div class="auth-main">
+    <div class="auth-card">
+      <h2>Account Login</h2>
+
+      <div *ngIf="errorMessage" class="alert-danger">
+        {{ errorMessage }}
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            placeholder="Enter your email"
+            [class.invalid]="loginForm.get('email')?.touched && loginForm.get('email')?.invalid"
+          />
+          <small *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['required']">
+            Email is required.
+          </small>
+          <small *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['email']">
+            Please enter a valid email address.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            placeholder="Enter your password"
+            [class.invalid]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid"
+          />
+          <small *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['required']">
+            Password is required.
+          </small>
+        </div>
+
+        <div class="form-actions">
+          <label class="remember-me">
+            <input type="checkbox" formControlName="rememberMe" />
+            Remember me
+          </label>
+          <a routerLink="/auth/forgot-password" class="forgot-link">Forgot Password?</a>
+        </div>
+
+        <button type="submit" [disabled]="loginForm.invalid || isLoading" class="btn-submit">
+          {{ isLoading ? 'Logging in...' : 'Sign In' }}
+        </button>
+      </form>
+
+      <p class="demo-hint">
+        Demo: owner&#64;shopkhata.com · admin&#64;shopkhata.com · manager&#64;shopkhata.com · cashier&#64;shopkhata.com (any password, 6+ chars)
+      </p>
+
+      <div class="customer-entry">
+        <span>আপনি কি কাস্টমার?</span>
+        <a routerLink="/portal/login">Customer Portal →</a>
+      </div>
+
+      <div class="auth-footer">
+        <p>Don't have an account? <a routerLink="/auth/register">Register</a></p>
+      </div>
+    </div>
+  </div>
+
+</div>

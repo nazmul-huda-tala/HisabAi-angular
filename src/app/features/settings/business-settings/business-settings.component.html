@@ -1,0 +1,55 @@
+<div class="settings-page">
+  <div class="header">
+    <div><h1>Settings</h1><p>Manage your business, POS and application preferences.</p></div>
+    <div class="actions">
+      <button class="btn ghost" type="button" (click)="resetSettings()">🔄 Reset</button>
+      <button class="btn primary" type="button" (click)="saveSettings()">💾 Save Changes</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button [class.active]="activeTab==='business'" (click)="activeTab='business'">🏪 Business Information</button>
+    <button [class.active]="activeTab==='pos'" (click)="activeTab='pos'">🧾 POS & Invoice Settings</button>
+    <button [class.active]="activeTab==='alerts'" (click)="activeTab='alerts'">🔔 Alerts & Notifications</button>
+    <button [class.active]="activeTab==='system'" (click)="activeTab='system'">⚙️ System Preferences</button>
+  </div>
+
+  <section class="card" *ngIf="activeTab==='business'">
+    <div class="card-title"><div><h2>🏪 Business Information</h2><p>Basic information shown throughout your HisabKhata workspace.</p></div><span class="badge">Active</span></div>
+    <div class="grid">
+      <label>Business Name<input [(ngModel)]="settings.businessName"></label>
+      <label>Owner Name<input [(ngModel)]="settings.ownerName"></label>
+      <label>Phone Number<input [(ngModel)]="settings.phone"></label>
+      <label>Email<input type="email" [(ngModel)]="settings.email"></label>
+      <label class="full">Address<textarea rows="3" [(ngModel)]="settings.address"></textarea></label>
+      <label>Currency<select [(ngModel)]="settings.currency"><option>BDT (৳)</option><option>USD ($)</option></select></label>
+      <label>Default Tax Rate (%)<input type="number" min="0" [(ngModel)]="settings.taxRate"></label>
+    </div>
+  </section>
+
+  <section class="card" *ngIf="activeTab==='pos'">
+    <div class="card-title"><div><h2>🧾 POS & Invoice Settings</h2><p>Configure checkout, invoice and fast retail counter behaviour.</p></div></div>
+    <div class="grid">
+      <label>Invoice Prefix<input [(ngModel)]="settings.invoicePrefix"></label>
+      <label>Default Low Stock Level<input type="number" min="0" [(ngModel)]="settings.lowStockAlert"></label>
+    </div>
+    <div class="option"><div><b>Auto Print Invoice</b><small>Automatically open the print dialog after a completed sale.</small></div><label class="switch"><input type="checkbox" [(ngModel)]="settings.autoPrint"><span></span></label></div>
+    <div class="option"><div><b>POS Sound</b><small>Play a short sound after barcode/product actions.</small></div><label class="switch"><input type="checkbox" [(ngModel)]="settings.sound"><span></span></label></div>
+  </section>
+
+  <section class="card" *ngIf="activeTab==='alerts'">
+    <div class="card-title"><div><h2>🔔 Alerts & Notifications</h2><p>Choose which alerts should be enabled.</p></div></div>
+    <div class="option"><div><b>Low Stock Alerts</b><small>Warn when product stock reaches the configured level.</small></div><label class="switch"><input type="checkbox" [(ngModel)]="settings.lowStockAlerts"><span></span></label></div>
+    <div class="option"><div><b>Due Payment Reminder</b><small>Highlight customers and suppliers with outstanding balances.</small></div><label class="switch"><input type="checkbox" [(ngModel)]="settings.duePaymentReminder"><span></span></label></div>
+    <div class="option"><div><b>Daily Summary</b><small>Keep the dashboard ready with daily sales and expense summary.</small></div><label class="switch"><input type="checkbox" [(ngModel)]="settings.dailySummary"><span></span></label></div>
+  </section>
+
+  <section class="card" *ngIf="activeTab==='system'">
+    <div class="card-title"><div><h2>⚙️ System Preferences</h2><p>Application-level preferences for this demo workspace.</p></div></div>
+    <div class="option"><div><b>Compact Mode</b><small>Use a denser layout for busy retail counters.</small></div><label class="switch"><input type="checkbox" [(ngModel)]="settings.compactMode"><span></span></label></div>
+    <div class="option"><div><b>Dark Mode</b><small>Enable the preference for the future global theme service.</small></div><label class="switch"><input type="checkbox" [(ngModel)]="settings.darkMode"><span></span></label></div>
+    <div class="info">🔒 Security, RBAC, audit logging and API-backed settings will be connected when the Spring Boot backend is added.</div>
+  </section>
+
+  <div class="toast" *ngIf="message">{{message}}</div>
+</div>

@@ -1,0 +1,150 @@
+<div class="landing">
+  <header class="landing-nav">
+    <a routerLink="/" class="landing-nav__brand">
+      <app-icon name="taka" [size]="22" />
+      <span>HisabKhata</span>
+    </a>
+    <div class="landing-nav__actions">
+      <a class="button-secondary" routerLink="/auth/login">লগইন</a>
+      <a class="button-primary" routerLink="/auth/register">সাইন আপ</a>
+    </div>
+  </header>
+
+  <section class="landing-hero">
+    <div class="landing-hero__content">
+      <span class="landing-hero__badge">
+        <app-icon name="shield" [size]="14" /> বাংলা-ফার্স্ট ডিজিটাল লেজার
+      </span>
+      <h1>দোকানের লাল খাতা, <br /><span class="highlight">এখন ডিজিটাল।</span></h1>
+      <p>
+        HisabKhata—বাংলাদেশের খুচরা ও পাইকারি ব্যবসায়ীদের জন্য তৈরি স্মার্ট POS, ইনভেন্টরি, বকেয়া ট্র্যাকিং ও অনলাইন ক্যাটালগ প্ল্যাটফর্ম।
+      </p>
+      
+      <div class="landing-hero__actions">
+        <a class="button-primary" routerLink="/auth/register">
+          ডিজিটাল খাতা খুলুন <app-icon name="arrow-up-right" [size]="16" />
+        </a>
+        <a class="button-secondary" routerLink="/store">
+          ডেমো স্টোর দেখুন
+        </a>
+      </div>
+
+      <div class="landing-hero__meta">
+        <span>✓ ২ মিনিটে সেটআপ</span>
+        <span>✓ কোনো হিডেন চার্জ নেই</span>
+        <span>✓ ১-অন-১ সাপোর্ট</span>
+      </div>
+    </div>
+
+    <div class="landing-hero__mockup">
+      <div class="ledger-card">
+        <div class="ledger-card__header">
+          <div class="ledger-card__title">
+            <span class="dot"></span>
+            <div>
+              <strong>দৈনিক হিসাব খাতা</strong>
+              <small>আজকের স্টেটমেন্ট</small>
+            </div>
+          </div>
+          <span class="ledger-card__stamp">যাচাইকৃত</span>
+        </div>
+
+        <div class="ledger-card__table">
+          <div class="ledger-row ledger-row--head">
+            <span>বিবরণ</span>
+            <span>টাইপ</span>
+            <span class="text-right">টাকা</span>
+          </div>
+          <div class="ledger-row">
+            <span>চালান #১০৪৮ (সুতির শাড়ি)</span>
+            <span class="tag tag--in">বিক্রয়</span>
+            <span class="text-right text-success">+ ৳২,৪৫০</span>
+          </div>
+          <div class="ledger-row">
+            <span>সাপ্লায়ার পেমেন্ট (মেসার্স ট্রেডার্স)</span>
+            <span class="tag tag--out">ক্রয়</span>
+            <span class="text-right text-danger">- ৳১,২০০</span>
+          </div>
+          <div class="ledger-row">
+            <span>ক্যাশ পেমেন্ট (POS বিল)</span>
+            <span class="tag tag--in">বিক্রয়</span>
+            <span class="text-right text-success">+ ৳৮৯০</span>
+          </div>
+        </div>
+
+        <div class="ledger-card__footer">
+          <div>
+            <small>আজকের নিট ক্যাশ</small>
+            <strong>৳২,১৪০</strong>
+          </div>
+          <div class="text-right">
+            <small>মোট স্টক আইটেম</small>
+            <strong>১,৪২০ টি</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-modules">
+    <div class="section-header">
+      <h2>ডিজিটাল খাতার মডিউলসমূহ</h2>
+      <p>একটি সফটওয়্যারেই আপনার ব্যবসার সমস্ত হিসাব রাখার প্রয়োজনীয় টুলস</p>
+    </div>
+
+    <div class="ledger-list">
+      @for (m of modules; track m.no) {
+        <div class="ledger-item">
+          <div class="ledger-item__index">{{ m.no }}</div>
+          <div class="ledger-item__body">
+            <div class="ledger-item__head">
+              <span class="ledger-item__icon"><app-icon [name]="m.icon" [size]="18" /></span>
+              <h3>{{ m.title }}</h3>
+              <span class="ledger-item__tag">{{ m.tag }}</span>
+            </div>
+            <p>{{ m.desc }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="landing-targets">
+    <div class="section-header">
+      <h2>কাদের জন্য HisabKhata?</h2>
+      <p>যেসব ব্যবসায়ে প্রতিদিনের ইনভেন্টরি ও ক্যাশ হিসাব রাখা প্রয়োজন</p>
+    </div>
+
+    <div class="targets-grid">
+      @for (t of targetBusinesses; track t.type) {
+        <div class="target-card">
+          <app-icon name="box" [size]="18" />
+          <div>
+            <h4>{{ t.type }}</h4>
+            <p>{{ t.benefit }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="landing-cta">
+    <div class="landing-cta__box">
+      <h2>আপনার খাতা আজই ডিজিটালি পরিচালনা শুরু করুন</h2>
+      <p>সেটআপ করতে মাত্র ২ মিনিট সময় লাগবে। কোনো ক্রেডিট কার্ডের প্রয়োজন নেই।</p>
+      <a class="button-primary" routerLink="/auth/register">ফ্রি অ্যাকাউন্ট খুলুন</a>
+    </div>
+  </section>
+
+  <footer class="landing-footer">
+    <div class="landing-footer__brand">
+      <app-icon name="taka" [size]="18" />
+      <span>© ২০২৬ HisabKhata। সর্বস্বত্ব সংরক্ষিত।</span>
+    </div>
+    <div class="landing-footer__links">
+      <a routerLink="/store">অনলাইন স্টোর</a>
+      <a routerLink="/auth/login">লগইন</a>
+      <a routerLink="/auth/register">সাইন আপ</a>
+    </div>
+  </footer>
+</div>

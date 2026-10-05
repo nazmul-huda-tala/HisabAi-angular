@@ -1,0 +1,41 @@
+@if (expense(); as e) {
+  <section class="feature-page">
+    <div class="feature-page__header">
+      <div>
+        <a class="back-link" routerLink="/expenses">← খরচের তালিকা</a>
+        <h2>{{ e.expenseNo }}</h2>
+        <p>{{ e.category }} · {{ formatDateBn(e.date) }}</p>
+      </div>
+      <div class="header-actions">
+        <a class="button-secondary" [routerLink]="['/expenses', e.id, 'edit']">এডিট</a>
+        <button type="button" class="button-danger" (click)="deleteExpense()">মুছুন</button>
+      </div>
+    </div>
+
+    <div class="metric-row">
+      <article class="metric-card"><p>পরিমাণ</p><strong>{{ formatTaka(e.amount) }}</strong><small>{{ e.paymentMethod }}</small></article>
+      <article class="metric-card"><p>অবস্থা</p><strong><span class="status" [class.status--warning]="e.status === 'due'">{{ statusLabels[e.status] }}</span></strong><small>&nbsp;</small></article>
+      <article class="metric-card"><p>রশিদ/সংযুক্তি</p><strong>{{ e.attachmentName ?? '—' }}</strong><small>Demo — ফাইল নাম শুধু</small></article>
+    </div>
+
+    <div class="data-panel">
+      <div class="data-panel__toolbar">
+        <div><p>বিস্তারিত</p></div>
+      </div>
+      <div class="detail-body">
+        <div class="detail-row"><span>খরচ নং</span><strong>{{ e.expenseNo }}</strong></div>
+        <div class="detail-row"><span>তারিখ</span><strong>{{ formatDateBn(e.date) }}</strong></div>
+        <div class="detail-row"><span>খাত</span><strong>{{ e.category }}</strong></div>
+        <div class="detail-row"><span>পেমেন্ট মাধ্যম</span><strong>{{ e.paymentMethod }}</strong></div>
+        <div class="detail-row"><span>নোট</span><strong>{{ e.note || '—' }}</strong></div>
+      </div>
+    </div>
+  </section>
+} @else {
+  <section class="feature-page">
+    <div class="empty-state empty-state--page">
+      <p>খরচের তথ্য পাওয়া যায়নি।</p>
+      <a class="button-secondary" routerLink="/expenses">তালিকায় ফিরে যান</a>
+    </div>
+  </section>
+}

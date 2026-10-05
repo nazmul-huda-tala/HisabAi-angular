@@ -1,0 +1,100 @@
+<section class="feature-page">
+  <header class="feature-page__header">
+    <div>
+      <h2>কাস্টমার</h2>
+      <p>কাস্টমার প্রোফাইল, বিক্রয় ও বাকি হিসাব দেখুন।</p>
+    </div>
+    <a class="button-primary" routerLink="/customers/new">
+      <app-icon name="plus" [size]="16" /> নতুন কাস্টমার
+    </a>
+  </header>
+
+  @if (error(); as errorMessage) {
+    <div class="api-error">{{ errorMessage }}</div>
+  }
+
+  <div class="metric-row">
+    <article class="metric-card">
+      <p>মোট কাস্টমার</p>
+      <strong>{{ formatCount(totalCustomers()) }}</strong>
+      <small>এই মাসে {{ formatCount(newThisMonthCount()) }} জন নতুন</small>
+    </article>
+    <article class="metric-card">
+      <p>মোট বাকি</p>
+      <strong>{{ formatTaka(totalDue()) }}</strong>
+      <small>{{ formatCount(customersWithDueCount()) }} জনের কাছে পাওনা</small>
+    </article>
+    <article class="metric-card">
+      <p>গড় ক্রয় (প্রতি কাস্টমার)</p>
+      <strong>{{ formatTaka(averagePurchase()) }}</strong>
+      <small>লাইফটাইম গড়</small>
+    </article>
+  </div>
+
+  <section class="data-panel">
+    <div class="data-panel__toolbar">
+      <p>কাস্টমার তালিকা <span>({{ formatCount(filteredCustomers().length) }} জন)</span></p>
+      <input
+        class="search-box"
+        placeholder="নাম বা মোবাইল নম্বর খুঁজুন"
+        [value]="searchTerm()"
+        (input)="onSearchInput($any($event.target).value)"
+      />
+    </div>
+
+    @if (pagedCustomers().length > 0) {
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>কাস্টমার</th>
+              <th>ধরন</th>
+              <th>মোবাইল</th>
+              <th>মোট ক্রয়</th>
+              <th>বাকি</th>
+              <th>সর্বশেষ ভিজিট</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (customer of pagedCustomers(); track customer.id) {
+              <tr>
+                <td>
+                  <strong>{{ customer.name }}</strong>
+                  @if (customer.status === 'inactive') {
+                    <span class="status status--warning">নিষ্ক্রিয়</span>
+                  }
+                </td>
+                <td>{{ typeLabels[customer.type] }}</td>
+                <td>{{ customer.phone }}</td>
+                <td>{{ formatTaka(customer.totalPurchase) }}</td>
+                <td>
+                  @if (customer.totalDue > 0) {
+                    <span class="status status--danger">{{ formatTaka(customer.totalDue) }}</span>
+                  } @else {
+                    <span class="status">পরিশোধিত</span>
+                  }
+                </td>
+                <td>{{ customer.lastVisitLabel }}</td>
+                <td><a class="row-action" [routerLink]="['/customers', customer.id]">প্রোফাইল</a></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <footer class="data-panel__footer">
+        <span>{{ rangeLabel() }}</span>
+        <span>
+          <button type="button" class="page-link" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">‹ পূর্ববর্তী</button>
+          &nbsp;
+          <button type="button" class="page-link" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">পরবর্তী ›</button>
+        </span>
+      </footer>
+    } @else {
+      <div class="no-results">
+        <app-icon name="search" [size]="28" />
+        <p>"{{ searchTerm() }}" এর সাথে মিলে এমন কোনো কাস্টমার পাওয়া যায়নি।</p>
+      </div>
+    }
+  </section>
+</section>

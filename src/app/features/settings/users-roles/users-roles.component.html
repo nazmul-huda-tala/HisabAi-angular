@@ -1,0 +1,18 @@
+<div class="users-page">
+  <div class="header"><div><h1>👥 Users & Roles</h1><p>Control who can access your business and what they can do.</p></div><button type="button" (click)="addUser()">➕ Add User</button></div>
+  <div class="card">
+    <div class="table-head"><b>Team Members</b><span>{{users.length}} users</span></div>
+    <div class="table"><div class="row head"><span>User</span><span>Role</span><span>Status</span><span>Action</span></div>
+      <div class="row" *ngFor="let user of users; let i=index"><span><b>{{user.name}}</b><small>{{user.email}}</small></span><span class="role">{{user.role}}</span><span><i [class.inactive]="user.status==='Inactive'">{{user.status}}</i></span><span><button class="edit" type="button" (click)="editUser(i)">✏️ Edit User</button><button class="status" type="button" (click)="toggleStatus(i)">{{user.status==='Active'?'Disable':'Enable'}}</button></span></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" *ngIf="showForm" (click)="closeForm()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-head"><div><h2>{{editingIndex>=0?'✏️ Edit User':'➕ Add User'}}</h2><p>Set user access and role.</p></div><button class="close" type="button" (click)="closeForm()">✕</button></div>
+      <div class="form-grid"><label>Name<input [(ngModel)]="form.name" placeholder="User name"></label><label>Email<input type="email" [(ngModel)]="form.email" placeholder="user@example.com"></label><label>Role<select [(ngModel)]="form.role"><option>Owner</option><option>Manager</option><option>Cashier</option><option>Accountant</option><option>Staff</option></select></label><label>Status<select [(ngModel)]="form.status"><option>Active</option><option>Inactive</option></select></label></div>
+      <div class="modal-actions"><button type="button" class="cancel" (click)="closeForm()">Cancel</button><button type="button" class="save" (click)="saveUser()">💾 Save User</button></div>
+    </div>
+  </div>
+  <div class="toast" *ngIf="message">{{message}}</div>
+</div>

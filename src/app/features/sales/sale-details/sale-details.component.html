@@ -1,0 +1,160 @@
+<div class="sale-details-container" *ngIf="sale; else notFound">
+
+  <!-- Header -->
+  <div class="header-card">
+    <div class="header-info">
+      <span class="badge">Sales Invoice</span>
+      <h2>বিক্রয় বিবরণী</h2>
+      <p>ইনভয়েস নম্বর: <strong class="highlight">#{{ sale.invoiceNo }}</strong></p>
+    </div>
+    <div class="header-date">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+      </svg>
+      <span>{{ formatBnDate(sale.date) }} • {{ sale.timeLabel }}</span>
+    </div>
+  </div>
+
+  <!-- Customer + Payment -->
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="card-title"><h3>কাস্টমার তথ্য</h3></div>
+      <div class="info-rows">
+        <div><label>নাম</label><p>{{ sale.customerName }}</p></div>
+        <div><label>ইনভয়েস নম্বর</label><p class="link-no">#{{ sale.invoiceNo }}</p></div>
+        <div><label>তারিখ</label><p>{{ formatBnDate(sale.date) }}</p></div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="card-title"><h3>পেমেন্ট তথ্য</h3></div>
+      <div class="info-rows">
+        <div>
+          <label>পেমেন্ট মেথড</label>
+          <p>
+            <span class="method-badge"
+              [ngClass]="'method-' + sale.paymentMethod.toLowerCase()">
+              {{ sale.paymentMethod }}
+            </span>
+          </p>
+        </div>
+        <div>
+          <label>অবস্থা</label>
+          <p>
+            <span class="badge-status"
+              [class.status-paid]="sale.status === 'paid'"
+              [class.status-partial]="sale.status === 'partial'"
+              [class.status-due]="sale.status === 'due'">
+              {{ statusLabels[sale.status] }}
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Items Table -->
+  <div class="table-card">
+    <div class="card-title"><h3>বিক্রয়কৃত পণ্যের তালিকা</h3></div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>পণ্যের নাম</th>
+            <th class="text-center">পরিমাণ</th>
+            <th class="text-right">একক মূল্য</th>
+            <th class="text-right">মোট মূল্য</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of sale.items; let i = index">
+            <td>{{ toBn(i + 1) }}</td>
+            <td>
+              <span class="product-name">{{ item.productName }}</span>
+              <span class="product-code">SKU: {{ item.sku }}</span>
+            </td>
+            <td class="text-center">
+              <span class="badge-qty">{{ toBn(item.quantity) }} টি</span>
+            </td>
+            <td class="text-right">
+              ৳ {{ toBn(item.unitPrice.toLocaleString('en-IN')) }}
+            </td>
+            <td class="text-right font-bold">
+              ৳ {{ toBn(item.lineTotal.toLocaleString('en-IN')) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-wrapper">
+    <div class="note-box">
+      <label>পেমেন্ট সারসংক্ষেপ:</label>
+      <p>
+        {{ sale.customerName }} মোট ৳ {{ toBn(sale.total.toLocaleString('en-IN')) }} এর মধ্যে
+        পরিশোধ করেছেন ৳ {{ toBn(sale.paidAmount.toLocaleString('en-IN')) }}
+        @if (sale.dueAmount > 0) {
+          এবং বাকি রয়েছে ৳ {{ toBn(sale.dueAmount.toLocaleString('en-IN')) }}।
+        } @else {
+          এবং সম্পূর্ণ পরিশোধিত হয়েছে।
+        }
+      </p>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-row">
+        <span>সাব-টোটাল:</span>
+        <span>৳ {{ toBn(sale.subtotal.toLocaleString('en-IN')) }}</span>
+      </div>
+
+      <div class="summary-row" *ngIf="sale.discount > 0">
+        <span>ছাড়:</span>
+        <span>- ৳ {{ toBn(sale.discount.toLocaleString('en-IN')) }}</span>
+      </div>
+
+      <div class="summary-row" *ngIf="sale.vat > 0">
+        <span>ভ্যাট:</span>
+        <span>+ ৳ {{ toBn(sale.vat.toLocaleString('en-IN')) }}</span>
+      </div>
+
+      <div class="summary-row">
+        <span>সর্বমোট:</span>
+        <span>৳ {{ toBn(sale.total.toLocaleString('en-IN')) }}</span>
+      </div>
+
+      <div class="summary-row">
+        <span>পরিশোধিত:</span>
+        <span class="text-success">
+          ৳ {{ toBn(sale.paidAmount.toLocaleString('en-IN')) }}
+        </span>
+      </div>
+
+      <div class="summary-row total-due">
+        <span>বাকি:</span>
+        <span class="text-danger">
+          ৳ {{ toBn(sale.dueAmount.toLocaleString('en-IN')) }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <a routerLink="/sales" class="btn btn-outline">← তালিকায় ফিরে যান</a>
+  </div>
+</div>
+
+<ng-template #notFound>
+  <div class="not-found">
+    <h3>বিক্রয় পাওয়া যায়নি!</h3>
+    <a routerLink="/sales" class="btn btn-outline">← তালিকায় ফিরে যান</a>
+  </div>
+</ng-template>

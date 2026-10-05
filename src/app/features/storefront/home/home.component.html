@@ -1,0 +1,22 @@
+<app-store-header />
+<section class="store-hero">
+  <h1>আপনার দোকানের সব পণ্য, এক ক্লিকে অর্ডার করুন</h1>
+  <p>ভালো দামে দৈনন্দিন প্রয়োজনীয় পণ্য, দ্রুত ডেলিভারি সহ — ক্যাশ অন ডেলিভারি, বিকাশ বা নগদে পেমেন্ট করুন।</p>
+  <a class="button-primary" routerLink="/store/products">সব পণ্য দেখুন <app-icon name="arrow-up-right" [size]="15" /></a>
+</section>
+
+<section class="store-section">
+  <h2>জনপ্রিয় পণ্য</h2>
+  <div class="store-grid">
+    @for (p of featured; track p.id) {
+      <article class="store-card">
+        <a [routerLink]="['/store/products', p.id]"><img [src]="p.imageUrl" [alt]="p.name" /></a>
+        <div class="store-card__body">
+          <a [routerLink]="['/store/products', p.id]"><strong>{{ p.name }}</strong></a>
+          <p>{{ formatTaka(p.salePrice) }} <small>/ {{ p.unit }}</small></p>
+          <button type="button" class="button-secondary" (click)="addToCart(p.id)"><app-icon name="cart" [size]="14" /> কার্টে যুক্ত করুন</button>
+        </div>
+      </article>
+    }
+  </div>
+</section>

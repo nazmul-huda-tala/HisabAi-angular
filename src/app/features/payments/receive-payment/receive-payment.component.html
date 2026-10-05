@@ -1,0 +1,63 @@
+<section class="feature-page">
+  <div class="feature-page__header">
+    <div>
+      <h2>পেমেন্ট গ্রহণ</h2>
+      <p>কাস্টমার বা সরবরাহকারীর বকেয়া পেমেন্ট এন্ট্রি করুন। (Demo — ব্যাকএন্ড কানেকশন নেই)</p>
+    </div>
+  </div>
+
+  @if (!party()) {
+    <div class="data-panel">
+      <p class="empty-row">
+        কোনো কাস্টমার/সরবরাহকারী নির্বাচিত নেই। বাকির হিসাব বা পরিশোধ্য তালিকা থেকে "গ্রহণ করুন" বাটনে ক্লিক করে আসুন।
+      </p>
+      <a class="button-primary" routerLink="/dues/customers">বাকির হিসাবে যান</a>
+    </div>
+  } @else if (submitted()) {
+    <div class="data-panel">
+      <div class="demo-notice">
+        {{ party()!.name }}-এর কাছ থেকে {{ formatTaka(lastAmount()) }} পেমেন্ট গ্রহণ করা হয়েছে (demo রেকর্ড হয়েছে)।
+      </div>
+      <div class="form-actions">
+        <button type="button" class="button-primary" (click)="backToList()">তালিকায় ফিরে যান</button>
+      </div>
+    </div>
+  } @else {
+    <div class="data-panel">
+      <div class="data-panel__toolbar">
+        <div>
+          <p>{{ party()!.name }}</p>
+          <span>বর্তমান বাকি: {{ formatTaka(party()!.due) }}</span>
+        </div>
+      </div>
+
+      <form class="form-grid" [formGroup]="form" (ngSubmit)="submit()">
+        <label class="form-field">
+          <span>পরিমাণ (৳)</span>
+          <input type="number" formControlName="amount" min="1" />
+          @if (form.get('amount')?.invalid && form.get('amount')?.touched) {
+            <small class="field-error">সঠিক পরিমাণ দিন</small>
+          }
+        </label>
+
+        <label class="form-field">
+          <span>পেমেন্ট মাধ্যম</span>
+          <select formControlName="method">
+            @for (m of methods; track m) {
+              <option [value]="m">{{ methodLabels[m] }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="form-field form-field--full">
+          <span>নোট (ঐচ্ছিক)</span>
+          <textarea formControlName="note" rows="2"></textarea>
+        </label>
+
+        <div class="form-actions">
+          <button type="submit" class="button-primary">পেমেন্ট গ্রহণ করুন</button>
+        </div>
+      </form>
+    </div>
+  }
+</section>

@@ -1,0 +1,24 @@
+<div class="main-layout">
+  <app-sidebar />
+  <section class="main-layout__workspace">
+    <app-top-navbar />
+    <main class="main-layout__content">
+      <router-outlet />
+    </main>
+    <footer class="app-footer">
+      <div class="app-footer__brand">
+        <span class="app-footer__copy">© {{ currentYear }} HisabKhata</span>
+        <span class="app-footer__tag">বাংলাদেশের ব্যবসার জন্য স্মার্ট হিসাব ব্যবস্থাপনা</span>
+      </div>
+      <nav class="app-footer__links">
+        <a routerLink="/settings/business">সেটিংস</a>
+        <span class="app-footer__dot">•</span>
+        <a href="mailto:support@hishabai.com">support&#64;hishabai.com</a>
+        <span class="app-footer__dot">•</span>
+        <a href="tel:+8809611000000">১৬২৪৭</a>
+        <span class="app-footer__dot">•</span>
+        <span class="app-footer__version">v0.9.0 (Beta)</span>
+      </nav>
+    </footer>
+  </section>
+</div>

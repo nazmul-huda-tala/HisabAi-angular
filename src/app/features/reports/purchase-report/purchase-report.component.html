@@ -1,0 +1,48 @@
+<section class="feature-page report-page">
+  <header class="feature-page__header report-header">
+    <div>
+      <div class="eyebrow"><app-icon name="truck" [size]="15" /> REPORTS / PURCHASE</div>
+      <h2>Purchase report</h2>
+      <p>Supplier purchase, inventory cost এবং payable position বুঝে নিন।</p>
+    </div>
+    <div class="header-actions"><button type="button" class="button-secondary" (click)="printReport()"><app-icon name="file-text" [size]="16" /> Print</button><button type="button" class="button-primary" (click)="exportCsv()"><app-icon name="arrow-down" [size]="16" /> Export CSV</button></div>
+  </header>
+
+  @if (notice) { <div class="report-notice">{{ notice }}</div> }
+
+  <section class="filter-panel">
+    <div class="filter-title"><span>Report period</span><small>তারিখ দিয়ে report সীমিত করুন</small></div>
+    <label>From <input type="date" [(ngModel)]="fromDate" /></label>
+    <label>To <input type="date" [(ngModel)]="toDate" /></label>
+    <label>Status <select [(ngModel)]="statusFilter"><option value="All">All status</option><option value="Paid">Paid</option><option value="Partial">Partial</option><option value="Due">Due</option></select></label>
+    <button type="button" class="filter-reset" (click)="resetFilters()">Reset</button>
+  </section>
+
+  <div class="metric-row report-metrics">
+    <article class="metric-card metric-card--primary"><p>Total purchase</p><strong>{{ formatMoney(totalPurchase) }}</strong><small>{{ rows.length }}টি invoice</small></article>
+    <article class="metric-card"><p>Paid to suppliers</p><strong>{{ formatMoney(totalPaid) }}</strong><small>মোট purchase-এর {{ totalPurchase ? (totalPaid / totalPurchase * 100 | number:'1.0-0') : 0 }}%</small></article>
+    <article class="metric-card metric-card--warning"><p>Total payable</p><strong>{{ formatMoney(totalPayable) }}</strong><small>Supplier due</small></article>
+    <article class="metric-card"><p>Average purchase</p><strong>{{ formatMoney(averagePurchase) }}</strong><small>প্রতি invoice</small></article>
+  </div>
+
+  <div class="report-grid">
+    <section class="report-card chart-card">
+      <div class="card-heading"><div><h3>Purchase trend</h3><p>গত ৬ মাসের inventory purchase</p></div><span class="legend"><i></i> Purchase</span></div>
+      <div class="bar-chart" aria-label="Monthly purchase chart">
+        @for (month of monthlyPurchases; track month.label) { <div class="bar-column"><span class="bar-value">{{ formatMoney(month.value) }}</span><div class="bar bar--amber" [style.height.%]="month.value / maxMonthlyPurchase * 100"></div><small>{{ month.label }}</small></div> }
+      </div>
+    </section>
+    <section class="report-card insight-card">
+      <div class="card-heading"><div><h3>Payable health</h3><p>Supplier payment overview</p></div><app-icon name="alert-triangle" [size]="19" /></div>
+      <div class="health-ring health-ring--purchase"><div><strong>{{ totalPurchase ? (totalPaid / totalPurchase * 100 | number:'1.0-0') : 0 }}%</strong><small>paid</small></div></div>
+      <div class="health-rows"><div><span><i class="dot dot--success"></i> Paid</span><strong>{{ formatMoney(totalPaid) }}</strong></div><div><span><i class="dot dot--warning"></i> Payable</span><strong>{{ formatMoney(totalPayable) }}</strong></div></div>
+    </section>
+  </div>
+
+  <section class="report-card table-card">
+    <div class="card-heading table-heading"><div><h3>Purchase transactions</h3><p>{{ rows.length }}টি result দেখানো হচ্ছে</p></div><input class="search-box" type="search" [(ngModel)]="searchTerm" placeholder="Invoice বা supplier খুঁজুন" aria-label="Search purchase report" /></div>
+    <div class="table-wrap"><table class="data-table report-table"><thead><tr><th>Invoice</th><th>Date</th><th>Supplier</th><th>Items</th><th>Total</th><th>Paid</th><th>Payable</th><th>Status</th></tr></thead><tbody>
+      @for (row of rows; track row.id) { <tr><td><strong>{{ row.invoice }}</strong></td><td>{{ formatDate(row.date) }}</td><td>{{ row.supplier }}</td><td>{{ row.items }}</td><td><strong>{{ formatMoney(row.total) }}</strong></td><td>{{ formatMoney(row.paid) }}</td><td>{{ formatMoney(row.total - row.paid) }}</td><td><span class="status" [class.status--warning]="row.status === 'Partial'" [class.status--danger]="row.status === 'Due'">{{ row.status }}</span></td></tr> } @empty { <tr><td colspan="8" class="empty-row">এই filter-এ কোনো purchase record পাওয়া যায়নি।</td></tr> }
+    </tbody></table></div>
+  </section>
+</section>

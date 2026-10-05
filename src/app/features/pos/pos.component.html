@@ -1,0 +1,163 @@
+<div class="pos-page">
+  <header class="pos-header">
+    <div>
+      <div class="eyebrow">FAST POS / QUICK SALE</div>
+      <h1>দ্রুত বিক্রয়</h1>
+      <p>ব্যস্ত দোকানে দ্রুত পণ্য যোগ করুন, Hold করুন এবং কয়েক সেকেন্ডে বিক্রয় সম্পন্ন করুন।</p>
+    </div>
+    <div class="header-actions">
+      <a class="pos-btn secondary" routerLink="/sales">বিক্রয় তালিকা</a>
+      <button class="pos-btn secondary" type="button" (click)="openHeldSales()">Held Sales <span class="count">{{ heldSales.length }}</span></button>
+      <a class="pos-btn secondary" routerLink="/customers">কাস্টমার</a>
+    </div>
+  </header>
+
+  @if (message) {
+    <div class="toast">{{ message }}</div>
+  }
+
+  <div class="pos-layout">
+    <section class="selling-panel">
+      <div class="search-panel">
+        <div class="search-row">
+          <div class="search-input-wrap">
+            <span class="search-icon">⌕</span>
+            <input id="pos-search" [(ngModel)]="search" placeholder="পণ্যের নাম / SKU / বারকোড লিখুন..." autocomplete="off" />
+            <kbd>F2</kbd>
+          </div>
+          <div class="barcode-wrap">
+            <input [(ngModel)]="barcode" (keyup.enter)="scanBarcode()" placeholder="বারকোড স্ক্যান করুন" />
+            <button class="scan-btn" type="button" (click)="scanBarcode()">স্ক্যান</button>
+          </div>
+        </div>
+        @if (search || barcode) {
+          <div class="search-results">
+            @for (product of filteredProducts; track product.id) {
+              <button type="button" class="result-item" (click)="addProduct(product)">
+                <span><strong>{{ product.name }}</strong><small>{{ product.sku }} • {{ product.category }}</small></span>
+                <b>৳{{ product.price }}</b>
+              </button>
+            } @empty {
+              <div class="no-result">কোনো পণ্য পাওয়া যায়নি</div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="section-title">
+        <div><h2>জনপ্রিয় পণ্য</h2><span>এক ক্লিকে কার্টে যোগ করুন</span></div>
+        <a routerLink="/products">সব পণ্য →</a>
+      </div>
+
+      <div class="quick-grid">
+        @for (product of products.slice(0, 8); track product.id) {
+          <button class="quick-product" type="button" (click)="addProduct(product)">
+            <span class="product-icon">{{ product.name.charAt(0) }}</span>
+            <span class="product-name">{{ product.name }}</span>
+            <span class="product-price">৳{{ product.price }}</span>
+          </button>
+        }
+      </div>
+
+      <div class="cart-card">
+        <div class="cart-head">
+          <div><h2>বর্তমান বিক্রয়</h2><span>{{ cart.length }} ধরনের পণ্য</span></div>
+          <button class="text-btn danger" type="button" (click)="clearCart()" [disabled]="!cart.length">কার্ট খালি করুন</button>
+        </div>
+
+        @if (cart.length) {
+          <div class="cart-table">
+            <div class="cart-row cart-row-head"><span>পণ্য</span><span>দাম</span><span>পরিমাণ</span><span>মোট</span><span></span></div>
+            @for (item of cart; track item.id) {
+              <div class="cart-row">
+                <div class="item-name"><strong>{{ item.name }}</strong><small>{{ item.sku }}</small></div>
+                <span>৳{{ item.price }}</span>
+                <div class="qty-control">
+                  <button type="button" (click)="decrease(item)">−</button>
+                  <b>{{ item.qty }}</b>
+                  <button type="button" (click)="increase(item)">+</button>
+                </div>
+                <strong>৳{{ item.price * item.qty }}</strong>
+                <button class="remove-btn" type="button" (click)="removeItem(item)" aria-label="পণ্য বাদ দিন">×</button>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-cart">
+            <div class="empty-icon">🛒</div>
+            <strong>কার্ট এখনো খালি</strong>
+            <span>উপরের জনপ্রিয় পণ্য বা সার্চ ব্যবহার করে পণ্য যোগ করুন।</span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <aside class="checkout-panel">
+      <div class="customer-card">
+        <div class="customer-avatar">👤</div>
+        <div class="customer-info">
+          <small>কাস্টমার</small>
+          <strong>{{ customer }}</strong>
+        </div>
+        <button type="button" class="change-btn" (click)="showCustomerMenu = !showCustomerMenu">পরিবর্তন</button>
+        @if (showCustomerMenu) {
+          <div class="customer-menu">
+            <button type="button" (click)="customer='Walk-in Customer'; showCustomerMenu=false">Walk-in Customer</button>
+            <button type="button" (click)="customer='রহিম স্টোর'; showCustomerMenu=false">রহিম স্টোর</button>
+            <button type="button" (click)="customer='করিম সাহেব'; showCustomerMenu=false">করিম সাহেব</button>
+            <a routerLink="/customers/new" (click)="showCustomerMenu=false">+ নতুন কাস্টমার</a>
+          </div>
+        }
+      </div>
+
+      <div class="summary">
+        <h2>বিলের সারাংশ</h2>
+        <div><span>Subtotal</span><b>৳{{ subtotal.toFixed(2) }}</b></div>
+        <div><span>Discount</span><b>৳{{ discount.toFixed(2) }}</b></div>
+        <div><span>VAT</span><b>৳{{ vat.toFixed(2) }}</b></div>
+        <div class="grand-total"><span>সর্বমোট</span><strong>৳{{ total.toFixed(2) }}</strong></div>
+      </div>
+
+      <div class="checkout-actions">
+        <button class="action-btn hold" type="button" (click)="holdSale()">⏸ Hold Sale <kbd>F4</kbd></button>
+        <button class="action-btn pay" type="button" (click)="openPayment()">💳 পেমেন্ট নিন <kbd>F8</kbd></button>
+      </div>
+
+      <div class="shortcuts">
+        <strong>⚡ দ্রুত কিবোর্ড শর্টকাট</strong>
+        <span><kbd>F2</kbd> পণ্য সার্চ</span>
+        <span><kbd>F4</kbd> Hold Sale</span>
+        <span><kbd>F8</kbd> Payment</span>
+        <span><kbd>Esc</kbd> Modal বন্ধ</span>
+      </div>
+
+      <div class="related-links">
+        <a routerLink="/sales-returns">↩ বিক্রয় ফেরত</a>
+        <a routerLink="/dues/customers">৳ কাস্টমার বাকি</a>
+        <a routerLink="/payments">▣ পেমেন্ট</a>
+      </div>
+    </aside>
+  </div>
+
+  @if (showPayment) {
+    <div class="modal-backdrop" (click)="showPayment=false">
+      <div class="payment-modal" (click)="$event.stopPropagation()">
+        <div class="modal-head"><div><span>CHECKOUT</span><h2>পেমেন্ট গ্রহণ</h2></div><button type="button" (click)="showPayment=false">×</button></div>
+        <div class="pay-total"><span>পরিশোধযোগ্য</span><strong>৳{{ total.toFixed(2) }}</strong></div>
+        <label>পেমেন্ট মাধ্যম
+          <select [(ngModel)]="paymentMethod">
+            <option>Cash</option><option>bKash</option><option>Nagad</option><option>Card</option>
+          </select>
+        </label>
+        <label>প্রাপ্ত টাকা
+          <input type="number" min="0" [(ngModel)]="received" />
+        </label>
+        <div class="change-box"><span>ফেরত</span><strong>৳{{ change.toFixed(2) }}</strong></div>
+        <div class="modal-actions">
+          <button class="pos-btn secondary" type="button" (click)="showPayment=false">বাতিল</button>
+          <button class="pos-btn primary" type="button" (click)="completeSale()">✓ বিক্রয় সম্পন্ন করুন</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,35 @@
+
+<section class="profile-page">
+  <header class="profile-page__header">
+    <h2>প্রোফাইল</h2>
+    <p>আপনার তথ্য আপডেট করুন।</p>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="profile-page__form">
+    <label>
+      নাম
+      <input type="text" formControlName="name" />
+    </label>
+
+    <label>
+      মোবাইল নাম্বার
+      <input type="text" formControlName="phone" />
+    </label>
+
+    <label>
+      ইমেইল
+      <input type="email" formControlName="email" placeholder="example@mail.com" />
+    </label>
+
+    <label>
+      ঠিকানা
+      <textarea formControlName="address" rows="3"></textarea>
+    </label>
+
+    @if (savedMessage) {
+      <p class="profile-page__saved">তথ্য সংরক্ষণ করা হয়েছে ✓</p>
+    }
+
+    <button type="submit" class="profile-page__save">সংরক্ষণ করুন</button>
+  </form>
+</section>

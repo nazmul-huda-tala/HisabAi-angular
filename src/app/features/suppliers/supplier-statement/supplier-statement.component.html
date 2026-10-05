@@ -1,0 +1,73 @@
+@if (supplier(); as s) {
+  <section class="feature-page">
+    <header class="feature-page__header">
+      <div>
+        <a class="back-link" [routerLink]="['/suppliers', s.id]"><app-icon name="arrow-left" [size]="15" /> {{ s.name }}</a>
+        <h2>সাপ্লায়ার স্টেটমেন্ট</h2>
+        <p>{{ s.companyName }} &middot; {{ s.phone }}</p>
+      </div>
+      <button type="button" class="button-secondary" onclick="window.print()">
+        <app-icon name="file-text" [size]="16" /> প্রিন্ট
+      </button>
+    </header>
+
+    <div class="metric-row">
+      <article class="metric-card">
+        <p>প্রারম্ভিক জের</p>
+        <strong>{{ formatTaka(s.openingBalance) }}</strong>
+      </article>
+      <article class="metric-card">
+        <p>মোট ক্রয় (এই সময়ে)</p>
+        <strong>{{ formatTaka(periodTotals().debit) }}</strong>
+      </article>
+      <article class="metric-card">
+        <p>বকেয়া (বর্তমান জের)</p>
+        <strong class="due-strong">{{ formatTaka(closingBalance()) }}</strong>
+      </article>
+    </div>
+
+    <section class="data-panel">
+      <div class="data-panel__toolbar">
+        <p>লেনদেনের ইতিহাস</p>
+        <div class="period-tabs">
+          <button type="button" [class.active]="periodFilter() === 'all'" (click)="setPeriod('all')">সব</button>
+          <button type="button" [class.active]="periodFilter() === 'this-month'" (click)="setPeriod('this-month')">এই মাস</button>
+          <button type="button" [class.active]="periodFilter() === 'last-month'" (click)="setPeriod('last-month')">গত মাস</button>
+        </div>
+      </div>
+
+      @if (filteredEntries().length > 0) {
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>তারিখ</th><th>ধরন</th><th>রেফারেন্স</th><th>বিবরণ</th><th>ক্রয় (দেনা)</th><th>পেমেন্ট (জমা)</th><th>জের</th></tr>
+            </thead>
+            <tbody>
+              @for (entry of filteredEntries(); track entry.reference + entry.date) {
+                <tr>
+                  <td>{{ formatDateBn(entry.date) }}</td>
+                  <td>{{ typeLabels[entry.type] }}</td>
+                  <td>{{ entry.reference }}</td>
+                  <td>{{ entry.description }}</td>
+                  <td>{{ entry.debit > 0 ? formatTaka(entry.debit) : '—' }}</td>
+                  <td>{{ entry.credit > 0 ? formatTaka(entry.credit) : '—' }}</td>
+                  <td><strong>{{ formatTaka(entry.balance) }}</strong></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="no-results"><p>এই সময়সীমায় কোনো লেনদেন নেই।</p></div>
+      }
+    </section>
+  </section>
+} @else {
+  <section class="feature-page">
+    <div class="no-results">
+      <app-icon name="truck" [size]="28" />
+      <p>সাপ্লায়ার পাওয়া যায়নি।</p>
+      <a class="button-secondary" routerLink="/suppliers"><app-icon name="arrow-left" [size]="15" /> তালিকায় ফিরে যান</a>
+    </div>
+  </section>
+}

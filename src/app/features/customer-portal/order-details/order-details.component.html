@@ -1,0 +1,62 @@
+
+<section class="order-detail-page">
+  @if (!order()) {
+    <div class="order-detail-page__empty">
+      <p>এই অর্ডারটি খুঁজে পাওয়া যায়নি।</p>
+      <a routerLink="/portal/orders">সব অর্ডারে ফিরে যান</a>
+    </div>
+  } @else {
+    <a class="order-detail-page__back" routerLink="/portal/orders">← আমার অর্ডারে ফিরুন</a>
+
+    <header class="order-detail-page__header">
+      <div>
+        <h2>{{ order()!.orderNo }}</h2>
+        <p>{{ formatDateBn(order()!.placedDate) }} তারিখে অর্ডার করা হয়েছে</p>
+      </div>
+      <span class="order-detail-page__status" [attr.data-status]="order()!.status">
+        {{ statusLabels[order()!.status] }}
+      </span>
+    </header>
+
+    @if (!isCancelled()) {
+      <div class="tracker">
+        @for (step of steps; track step; let i = $index) {
+          <div class="tracker__step" [class.done]="i <= stepIndex()">
+            <span class="tracker__dot"></span>
+            <span class="tracker__label">{{ statusLabels[step] }}</span>
+          </div>
+        }
+      </div>
+    }
+
+    <div class="order-detail-page__items">
+      @for (item of order()!.items; track item.productId) {
+        <div class="item-row">
+          <img [src]="item.imageUrl" [alt]="item.name" />
+          <div class="item-row__info">
+            <p class="item-row__name">{{ item.name }}</p>
+            <p class="item-row__qty">{{ item.quantity }} x {{ formatTaka(item.unitPrice) }}</p>
+          </div>
+          <strong class="item-row__total">{{ formatTaka(item.quantity * item.unitPrice) }}</strong>
+        </div>
+      }
+    </div>
+
+    <div class="order-detail-page__summary">
+      <div class="summary-row"><span>সাবটোটাল</span><span>{{ formatTaka(subtotal()) }}</span></div>
+      <div class="summary-row"><span>ডেলিভারি চার্জ</span><span>{{ formatTaka(order()!.deliveryFee) }}</span></div>
+      <div class="summary-row summary-row--total"><span>সর্বমোট</span><span>{{ formatTaka(total()) }}</span></div>
+    </div>
+
+    <div class="order-detail-page__meta">
+      <div>
+        <p class="label">ডেলিভারি ঠিকানা</p>
+        <p>{{ order()!.deliveryAddress }}</p>
+      </div>
+      <div>
+        <p class="label">পেমেন্ট পদ্ধতি</p>
+        <p>{{ paymentLabels[order()!.paymentMethod] }}</p>
+      </div>
+    </div>
+  }
+</section>

@@ -1,0 +1,77 @@
+@if (order(); as o) {
+  <section class="feature-page">
+    <header class="feature-page__header">
+      <div>
+        <a class="back-link" routerLink="/online-orders"><app-icon name="arrow-left" [size]="15" /> অর্ডার তালিকা</a>
+        <h2>{{ o.orderNo }}</h2>
+        <p>{{ formatDateBn(o.placedDate) }} &middot; {{ paymentLabels[o.paymentMethod] }}</p>
+      </div>
+      <a class="button-secondary" [routerLink]="['/online-orders', o.id, 'status']"><app-icon name="truck" [size]="15" /> স্ট্যাটাস ট্র্যাক করুন</a>
+    </header>
+
+    @if (o.status !== 'cancelled') {
+      <section class="data-panel">
+        <div class="status-steps">
+          @for (step of statusSteps; track step; let i = $index) {
+            <div class="status-steps__item" [class.done]="i <= currentStepIndex()">
+              <span class="status-steps__dot"><app-icon name="check" [size]="12" /></span>
+              <small>{{ statusLabels[step] }}</small>
+            </div>
+          }
+        </div>
+        <div class="data-panel__toolbar" style="margin-top:1rem;">
+          <p>বর্তমান স্ট্যাটাস: <strong>{{ statusLabels[o.status] }}</strong></p>
+          <div>
+            @if (nextStatus()) {
+              <button type="button" class="button-primary" (click)="advanceStatus()">পরবর্তী ধাপে নিন — {{ statusLabels[nextStatus()!] }}</button>
+            }
+            <button type="button" class="button-secondary" (click)="cancelOrder()">বাতিল করুন</button>
+          </div>
+        </div>
+      </section>
+    } @else {
+      <div class="no-results"><app-icon name="x" [size]="24" /><p>এই অর্ডারটি বাতিল করা হয়েছে।{{ o.note ? ' ' + o.note : '' }}</p></div>
+    }
+
+    <div class="metric-row">
+      <article class="metric-card"><p>কাস্টমার</p><strong>{{ o.customerName }}</strong><small>{{ o.customerPhone }}</small></article>
+      <article class="metric-card"><p>ডেলিভারি ঠিকানা</p><strong>{{ o.shippingAddress }}</strong></article>
+      <article class="metric-card"><p>সর্বমোট</p><strong>{{ formatTaka(total(o)) }}</strong><small>ডেলিভারি ফি {{ formatTaka(o.deliveryFee) }}</small></article>
+    </div>
+
+    <section class="data-panel">
+      <div class="data-panel__toolbar"><p>অর্ডার আইটেম</p></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>পণ্য</th><th>দাম</th><th>পরিমাণ</th><th>মোট</th></tr></thead>
+          <tbody>
+            @for (item of o.items; track item.productId) {
+              <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ formatTaka(item.unitPrice) }}</td>
+                <td>{{ item.quantity }}</td>
+                <td><strong>{{ formatTaka(item.unitPrice * item.quantity) }}</strong></td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr><td colspan="3">সাবটোটাল</td><td>{{ formatTaka(subtotal(o)) }}</td></tr>
+            <tr><td colspan="3">ডেলিভারি ফি</td><td>{{ formatTaka(o.deliveryFee) }}</td></tr>
+            <tr><td colspan="3"><strong>সর্বমোট</strong></td><td><strong>{{ formatTaka(total(o)) }}</strong></td></tr>
+          </tfoot>
+        </table>
+      </div>
+      @if (o.note) {
+        <p class="description-text">নোট: {{ o.note }}</p>
+      }
+    </section>
+  </section>
+} @else {
+  <section class="feature-page">
+    <div class="no-results">
+      <app-icon name="truck" [size]="28" />
+      <p>অর্ডার পাওয়া যায়নি।</p>
+      <a class="button-secondary" routerLink="/online-orders"><app-icon name="arrow-left" [size]="15" /> তালিকায় ফিরে যান</a>
+    </div>
+  </section>
+}

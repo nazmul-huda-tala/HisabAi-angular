@@ -1,0 +1,73 @@
+<div class="form-card">
+  <div class="form-header">
+    <div class="header-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+    </div>
+    <div>
+      <h2>{{ isEditMode ? 'খরচ সম্পাদনা করুন' : 'নতুন খরচ যোগ করুন' }}</h2>
+      <p>ব্যবসার দৈনন্দিন খরচের বিবরণ নথিভুক্ত করুন</p>
+    </div>
+  </div>
+
+  <form [formGroup]="expenseForm" (ngSubmit)="onSubmit()">
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label for="expenseDate">খরচের তারিখ <span class="required">*</span></label>
+        <input id="expenseDate" type="date" formControlName="expenseDate"
+               [class.error]="expenseForm.get('expenseDate')?.invalid && expenseForm.get('expenseDate')?.touched" />
+      </div>
+
+      <div class="form-group">
+        <label for="category">খরচের খাত <span class="required">*</span></label>
+        <select id="category" formControlName="category" [class.error]="expenseForm.get('category')?.invalid && expenseForm.get('category')?.touched">
+          <option value="" disabled>খাত নির্বাচন করুন</option>
+          <option *ngFor="let item of categories" [value]="item">{{ item }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="amount">পরিমাণ (৳) <span class="required">*</span></label>
+        <input id="amount" type="number" formControlName="amount" placeholder="0.00" min="1"
+               [class.error]="expenseForm.get('amount')?.invalid && expenseForm.get('amount')?.touched" />
+        <span class="error-msg" *ngIf="expenseForm.get('amount')?.invalid && expenseForm.get('amount')?.touched">
+          সঠিক টাকার পরিমাণ লিখুন
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="paymentMethod">পেমেন্ট মাধ্যম <span class="required">*</span></label>
+        <select id="paymentMethod" formControlName="paymentMethod">
+          <option *ngFor="let method of paymentMethods" [value]="method">{{ method }}</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="status">অবস্থা <span class="required">*</span></label>
+        <select id="status" formControlName="status">
+          <option value="paid">পরিশোধিত</option>
+          <option value="due">বাকি</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="attachment">রশিদ / সংযুক্তি (ঐচ্ছিক)</label>
+        <input id="attachment" type="file" (change)="onAttachmentChange($event)" />
+        <span class="error-msg" *ngIf="attachmentName" style="color: var(--color-muted, #64748b);">নির্বাচিত: {{ attachmentName }}</span>
+      </div>
+
+      <div class="form-group full-width">
+        <label for="note">বিবরণ / নোট (ঐচ্ছিক)</label>
+        <textarea id="note" formControlName="note" rows="3" placeholder="খরচ সংক্রান্ত বিস্তারিত তথ্য লিখুন..."></textarea>
+      </div>
+
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="onReset()">রিসেট</button>
+      <button type="submit" class="btn btn-primary" [disabled]="expenseForm.invalid">{{ isEditMode ? 'পরিবর্তন সেভ করুন' : 'খরচ সেভ করুন' }}</button>
+    </div>
+  </form>
+</div>

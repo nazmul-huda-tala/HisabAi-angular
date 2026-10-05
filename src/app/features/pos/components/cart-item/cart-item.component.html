@@ -1,0 +1,1 @@
+<div class="item"><div><strong>{{name}}</strong><small>৳{{price|number:'1.2-2'}}</small></div><input type="number" min="1" [ngModel]="qty" (ngModelChange)="change($event)"><b>৳{{price*qty|number:'1.2-2'}}</b><button class="remove" (click)="remove.emit()">×</button></div>

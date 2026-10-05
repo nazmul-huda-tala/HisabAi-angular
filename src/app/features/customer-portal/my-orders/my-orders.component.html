@@ -1,0 +1,45 @@
+
+<section class="orders-page">
+  <header class="orders-page__header">
+    <h2>আমার অর্ডার</h2>
+    <p>আপনার সব অর্ডারের বর্তমান অবস্থা এখানে দেখুন।</p>
+  </header>
+
+  <div class="orders-page__filters">
+    <button type="button" [class.active]="true" (click)="setFilter('all')">সব</button>
+    @for (status of statusOptions; track status) {
+      <button type="button" (click)="setFilter(status)">{{ statusLabels[status] }}</button>
+    }
+  </div>
+
+  @if (filteredOrders().length === 0) {
+    <div class="orders-page__empty">
+      <p>এই অবস্থায় কোনো অর্ডার নেই।</p>
+    </div>
+  }
+
+  <div class="orders-page__list">
+    @for (order of filteredOrders(); track order.id) {
+      <a class="order-card" [routerLink]="['/portal/orders', order.id]">
+        <div class="order-card__thumbs">
+          @for (item of order.items.slice(0, 3); track item.productId) {
+            <img [src]="item.imageUrl" [alt]="item.name" />
+          }
+          @if (order.items.length > 3) {
+            <span class="order-card__more">+{{ order.items.length - 3 }}</span>
+          }
+        </div>
+
+        <div class="order-card__info">
+          <p class="order-card__no">{{ order.orderNo }}</p>
+          <p class="order-card__date">{{ formatDateBn(order.placedDate) }} • {{ order.items.length }}টি পণ্য</p>
+        </div>
+
+        <div class="order-card__meta">
+          <span class="order-card__status" [attr.data-status]="order.status">{{ statusLabels[order.status] }}</span>
+          <strong class="order-card__total">{{ formatTaka(total(order.id)) }}</strong>
+        </div>
+      </a>
+    }
+  </div>
+</section>

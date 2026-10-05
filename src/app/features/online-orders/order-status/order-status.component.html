@@ -1,0 +1,36 @@
+@if (order(); as o) {
+  <section class="feature-page">
+    <header class="feature-page__header">
+      <div>
+        <a class="back-link" [routerLink]="['/online-orders', o.id]"><app-icon name="arrow-left" [size]="15" /> {{ o.orderNo }}</a>
+        <h2>ডেলিভারি স্ট্যাটাস</h2>
+        <p>অর্ডার তারিখ {{ formatDateBn(o.placedDate) }}</p>
+      </div>
+    </header>
+    <section class="data-panel">
+      @if (o.status === 'cancelled') {
+        <div class="no-results"><app-icon name="x" [size]="24" /><p>এই অর্ডারটি বাতিল করা হয়েছে।</p></div>
+      } @else {
+        <ol class="status-timeline">
+          @for (step of statusSteps; track step; let i = $index) {
+            <li [class.done]="i <= currentStepIndex()" [class.current]="i === currentStepIndex()">
+              <app-icon name="check" [size]="14" />
+              <div>
+                <strong>{{ statusLabels[step] }}</strong>
+                @if (i === currentStepIndex()) { <small>বর্তমান ধাপ</small> }
+              </div>
+            </li>
+          }
+        </ol>
+      }
+    </section>
+  </section>
+} @else {
+  <section class="feature-page">
+    <div class="no-results">
+      <app-icon name="truck" [size]="28" />
+      <p>অর্ডার পাওয়া যায়নি।</p>
+      <a class="button-secondary" routerLink="/online-orders"><app-icon name="arrow-left" [size]="15" /> তালিকায় ফিরে যান</a>
+    </div>
+  </section>
+}

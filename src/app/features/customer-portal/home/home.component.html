@@ -1,0 +1,52 @@
+<section class="customer-home">
+  <div class="hero">
+    <div class="hero__copy">
+      <span class="hero__eyebrow">HisabKhata Customer Portal</span>
+      <h2>স্বাগতম, {{ portal.currentCustomer()?.name }} 👋</h2>
+      <p>এক জায়গা থেকে পণ্য দেখুন, দ্রুত অর্ডার করুন এবং আপনার অর্ডারের অবস্থা ট্র্যাক করুন।</p>
+      <div class="hero__actions">
+        <a routerLink="/portal/shop" class="primary-btn">কেনাকাটা শুরু করুন →</a>
+        <a routerLink="/portal/orders" class="secondary-btn">আমার অর্ডার</a>
+      </div>
+    </div>
+    <div class="hero__visual">
+      <div class="hero-card hero-card--one">🛒<strong>{{ portal.cartCount() }}</strong><span>কার্টে পণ্য</span></div>
+      <div class="hero-card hero-card--two">📦<strong>{{ portal.myOrders().length }}</strong><span>মোট অর্ডার</span></div>
+      <div class="hero-circle">H</div>
+    </div>
+  </div>
+
+  <div class="quick-grid">
+    <a routerLink="/portal/shop" class="quick-card">
+      <span>🛍️</span><div><strong>পণ্য ব্রাউজ করুন</strong><small>জনপ্রিয় ও দৈনন্দিন পণ্য</small></div><b>→</b>
+    </a>
+    <a routerLink="/portal/orders" class="quick-card">
+      <span>📦</span><div><strong>অর্ডার ট্র্যাক করুন</strong><small>ডেলিভারি স্ট্যাটাস দেখুন</small></div><b>→</b>
+    </a>
+    <a routerLink="/portal/profile" class="quick-card">
+      <span>👤</span><div><strong>প্রোফাইল</strong><small>ঠিকানা ও যোগাযোগের তথ্য</small></div><b>→</b>
+    </a>
+  </div>
+
+  <div class="section-heading">
+    <div><span>Featured Products</span><h3>জনপ্রিয় পণ্য</h3></div>
+    <a routerLink="/portal/shop">সব পণ্য দেখুন →</a>
+  </div>
+
+  <div class="product-grid">
+    @for (product of featuredProducts(); track product.id) {
+      <article class="product-card">
+        <div class="product-card__image">
+          @if (product.badge) { <span class="badge">{{ product.badge }}</span> }
+          <img [src]="product.imageUrl" [alt]="product.name" loading="lazy" />
+        </div>
+        <div class="product-card__body">
+          <small>{{ product.category }} · {{ product.unit }}</small>
+          <h4>{{ product.name }}</h4>
+          <div class="price-row"><strong>{{ formatTaka(product.price) }}</strong>@if (product.oldPrice) { <del>{{ formatTaka(product.oldPrice) }}</del> }</div>
+          <button type="button" (click)="add(product.id)" [disabled]="product.stock === 0">কার্টে যোগ করুন</button>
+        </div>
+      </article>
+    }
+  </div>
+</section>

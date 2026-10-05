@@ -1,0 +1,210 @@
+@if (supplier(); as s) {
+  <section class="feature-page">
+
+    <!-- ===== Header ===== -->
+    <header class="feature-page__header anim-fade-up" style="--delay: 0ms">
+      <div class="feature-page__header-main">
+        <a class="back-link" routerLink="/suppliers">
+          <app-icon name="arrow-left" [size]="14" />
+          <span>সাপ্লাইয়ার তালিকা</span>
+        </a>
+
+        <div class="feature-page__identity">
+          <div class="customer-avatar">
+            <span>{{ s.companyName.charAt(0) }}</span>
+          </div>
+
+          <div class="feature-page__identity-text">
+            <h2>{{ s.companyName }}</h2>
+            <p>
+              <span class="identity-pill">{{ s.name }}</span>
+              <span class="dot-sep" aria-hidden="true"></span>
+              <span class="identity-meta">যোগ হয়েছে {{ formatDateBn(s.joinedDate) }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <a class="button-secondary" [routerLink]="['/suppliers', s.id, 'statement']">
+          <app-icon name="file-text" [size]="16" />
+          <span>স্টেটমেন্ট</span>
+        </a>
+        <a class="button-primary" [routerLink]="['/suppliers', s.id, 'edit']">
+          <app-icon name="edit-2" [size]="16" />
+          <span>এডিট</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- ===== Profile + Metrics ===== -->
+    <div class="profile-grid">
+
+      <!-- Profile card -->
+      <article class="profile-card anim-fade-up" style="--delay: 80ms">
+        <h3>প্রোফাইল তথ্য</h3>
+        <dl>
+          <div class="profile-row">
+            <span class="profile-row__icon">
+              <app-icon name="phone" [size]="15" />
+            </span>
+            <dt>মোবাইল</dt>
+            <dd>{{ s.phone }}</dd>
+          </div>
+
+          @if (s.email) {
+            <div class="profile-row">
+              <span class="profile-row__icon">
+                <app-icon name="mail" [size]="15" />
+              </span>
+              <dt>ইমেইল</dt>
+              <dd>{{ s.email }}</dd>
+            </div>
+          }
+
+          <div class="profile-row">
+            <span class="profile-row__icon">
+              <app-icon name="map-pin" [size]="15" />
+            </span>
+            <dt>ঠিকানা</dt>
+            <dd>{{ s.address }}</dd>
+          </div>
+
+          <div class="profile-row">
+            <span class="profile-row__icon">
+              <app-icon name="truck" [size]="15" />
+            </span>
+            <dt>পেমেন্ট শর্ত</dt>
+            <dd>{{ termsLabels[s.paymentTerms] }}</dd>
+          </div>
+
+          <div class="profile-row">
+            <span class="profile-row__icon">
+              <app-icon name="bar-chart" [size]="15" />
+            </span>
+            <dt>অবস্থা</dt>
+            <dd>
+              @if (s.status === 'active') {
+                <span class="status">সক্রিয়</span>
+              } @else {
+                <span class="status status--warning">নিষ্ক্রিয়</span>
+              }
+            </dd>
+          </div>
+
+          @if (s.note) {
+            <div class="profile-row">
+              <span class="profile-row__icon">
+                <app-icon name="file-text" [size]="15" />
+              </span>
+              <dt>নোট</dt>
+              <dd>{{ s.note }}</dd>
+            </div>
+          }
+        </dl>
+      </article>
+
+      <!-- Metric cards -->
+      <div class="metric-stack">
+        <article class="metric-card anim-fade-up" style="--delay: 140ms">
+          <p>মোট ক্রয়</p>
+          <strong>{{ formatTaka(s.totalPurchase) }}</strong>
+          <small>লাইফটাইম</small>
+        </article>
+
+        <article class="metric-card anim-fade-up" style="--delay: 200ms">
+          <p>বর্তমান পাওনা (দিতে হবে)</p>
+          <strong [class.due-strong]="s.totalPayable > 0">{{ formatTaka(s.totalPayable) }}</strong>
+          <small>প্রারম্ভিক জের: {{ formatTaka(s.openingBalance) }}</small>
+        </article>
+
+        <article class="metric-card anim-fade-up" style="--delay: 260ms">
+          <p>মোট ক্রয়ের বিপরীতে পাওনা</p>
+          <strong>{{ formatTaka(s.totalPayable) }}</strong>
+          <div class="credit-bar">
+            <div class="credit-bar__fill" [style.width.%]="payableUsagePercent()"></div>
+          </div>
+          <small>{{ payableUsagePercent() }}% বকেয়া</small>
+        </article>
+      </div>
+    </div>
+
+    <!-- ===== Recent Activity ===== -->
+    <section class="data-panel anim-fade-up" style="--delay: 320ms">
+      <div class="data-panel__toolbar">
+        <p>সাম্প্রতিক লেনদেন</p>
+        <a class="row-action" [routerLink]="['/suppliers', s.id, 'statement']">
+          <span>সম্পূর্ণ স্টেটমেন্ট দেখুন</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.4"
+               stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+
+      @if (recentEntries().length > 0) {
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>তারিখ</th>
+                <th>ধরন</th>
+                <th>রেফারেন্স</th>
+                <th>বিবরণ</th>
+                <th class="text-right">ক্রয় (দেনা বৃদ্ধি)</th>
+                <th class="text-right">পরিশোধ (দেনা কমা)</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (entry of recentEntries(); track entry.reference + entry.date) {
+                <tr>
+                  <td class="date-cell">{{ formatDateBn(entry.date) }}</td>
+                  <td>
+                    <span class="type-chip" [class.type-chip--debit]="entry.debit > 0">
+                      {{ entry.type === 'purchase' ? 'ক্রয়' : 'পরিশোধ' }}
+                    </span>
+                  </td>
+                  <td class="ref-cell">{{ entry.reference }}</td>
+                  <td class="desc-cell">{{ entry.description }}</td>
+                  <td class="text-right">
+                    @if (entry.debit > 0) {
+                      <span class="amount amount--debit">{{ formatTaka(entry.debit) }}</span>
+                    } @else { <span class="text-muted">—</span> }
+                  </td>
+                  <td class="text-right">
+                    @if (entry.credit > 0) {
+                      <span class="amount amount--credit">{{ formatTaka(entry.credit) }}</span>
+                    } @else { <span class="text-muted">—</span> }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="empty-state">
+          <span class="empty-state__icon">
+            <app-icon name="file-text" [size]="22" />
+          </span>
+          <p>এই সাপ্লাইয়ারের কোনো লেনদেন এখনো নেই।</p>
+        </div>
+      }
+    </section>
+
+  </section>
+} @else {
+  <section class="feature-page">
+    <div class="empty-state empty-state--page anim-fade-up">
+      <span class="empty-state__icon empty-state__icon--lg">
+        <app-icon name="truck" [size]="26" />
+      </span>
+      <p>সাপ্লাইয়ার পাওয়া যায়নি।</p>
+      <a class="button-secondary" routerLink="/suppliers">
+        <app-icon name="arrow-left" [size]="15" />
+        <span>তালিকায় ফিরে যান</span>
+      </a>
+    </div>
+  </section>
+}

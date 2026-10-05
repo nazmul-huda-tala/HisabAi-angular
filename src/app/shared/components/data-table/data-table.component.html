@@ -1,0 +1,1 @@
+<div class="table-wrap"><table><thead><tr><th *ngFor="let c of columns">{{c}}</th></tr></thead><tbody><tr *ngFor="let row of rows"><td *ngFor="let c of columns">{{row[c] ?? '—'}}</td></tr><tr *ngIf="!rows.length"><td [attr.colspan]="columns.length || 1" class="empty">{{emptyMessage}}</td></tr></tbody></table></div>

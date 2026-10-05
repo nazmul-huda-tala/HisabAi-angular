@@ -1,0 +1,160 @@
+@if (!notFound()) {
+  <section class="feature-page feature-page--narrow">
+
+    <!-- ===== Header ===== -->
+    <header class="feature-page__header">
+      <div>
+        <a class="back-link" routerLink="/customers">
+          <app-icon name="arrow-left" [size]="15" />
+          <span>কাস্টমার তালিকা</span>
+        </a>
+
+        <h2>{{ isEditMode ? 'কাস্টমার এডিট' : 'নতুন কাস্টমার' }}</h2>
+
+        <p>
+          {{ isEditMode
+              ? 'কাস্টমারের তথ্য হালনাগাদ করুন।'
+              : 'নতুন কাস্টমারের তথ্য দিন।' }}
+        </p>
+      </div>
+    </header>
+
+    <!-- ===== Save Banner ===== -->
+    @if (justSaved()) {
+      <div class="save-banner">
+        <app-icon name="check" [size]="16" />
+        <span>সংরক্ষণ হয়েছে — নিয়ে যাওয়া হচ্ছে…</span>
+      </div>
+    }
+
+    @if (saveError()) {
+      <div class="api-error">{{ saveError() }}</div>
+    }
+
+    <!-- ===== Form ===== -->
+    <form class="form-card" [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <div class="form-grid">
+
+        <!-- Name -->
+        <label class="field">
+          <span>কাস্টমারের নাম <em>*</em></span>
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="যেমন: রহিম স্টোর"
+            autocomplete="off"
+          />
+          @if (f.name.invalid && f.name.touched) {
+            <small class="field-error">নাম কমপক্ষে ২ অক্ষরের হতে হবে</small>
+          }
+        </label>
+
+        <!-- Phone -->
+        <label class="field">
+          <span>মোবাইল নম্বর <em>*</em></span>
+          <input
+            type="text"
+            formControlName="phone"
+            placeholder="01XXX-XXXXXX"
+            autocomplete="off"
+            inputmode="tel"
+          />
+          @if (f.phone.invalid && f.phone.touched) {
+            <small class="field-error">সঠিক বাংলাদেশি মোবাইল নম্বর দিন</small>
+          }
+        </label>
+
+        <!-- Address (full width) -->
+        <label class="field field--full">
+          <span>ঠিকানা</span>
+          <input
+            type="text"
+            formControlName="address"
+            placeholder="যেমন: মিরপুর-১০, ঢাকা"
+            autocomplete="off"
+          />
+        </label>
+
+        <!-- Type -->
+        <label class="field">
+          <span>কাস্টমারের ধরন <em>*</em></span>
+          <select formControlName="type">
+            @for (opt of typeOptions; track opt) {
+              <option [value]="opt">{{ typeLabels[opt] }}</option>
+            }
+          </select>
+        </label>
+
+        <!-- Status -->
+        <label class="field">
+          <span>অবস্থা</span>
+          <select formControlName="status">
+            <option value="active">সক্রিয়</option>
+            <option value="inactive">নিষ্ক্রিয়</option>
+          </select>
+        </label>
+
+        <!-- Credit Limit -->
+        <label class="field">
+          <span>ক্রেডিট লিমিট (৳)</span>
+          <input
+            type="number"
+            formControlName="creditLimit"
+            min="0"
+            step="100"
+            inputmode="numeric"
+          />
+          @if (f.creditLimit.invalid && f.creditLimit.touched) {
+            <small class="field-error">০ বা তার বেশি সংখ্যা দিন</small>
+          }
+        </label>
+
+        <!-- Opening Balance -->
+        <label class="field">
+          <span>প্রারম্ভিক জের (৳)</span>
+          <input
+            type="number"
+            formControlName="openingBalance"
+            min="0"
+            step="100"
+            inputmode="numeric"
+          />
+          @if (f.openingBalance.invalid && f.openingBalance.touched) {
+            <small class="field-error">০ বা তার বেশি সংখ্যা দিন</small>
+          }
+        </label>
+
+      </div>
+
+      <!-- ===== Actions ===== -->
+      <footer class="form-actions">
+        <a class="button-secondary" routerLink="/customers">
+          বাতিল
+        </a>
+
+        <button
+          type="submit"
+          class="button-primary"
+          [disabled]="justSaved()"
+        >
+          <app-icon name="check" [size]="16" />
+          <span>{{ isEditMode ? 'হালনাগাদ করুন' : 'সংরক্ষণ করুন' }}</span>
+        </button>
+      </footer>
+
+    </form>
+
+  </section>
+} @else {
+  <section class="feature-page">
+    <div class="no-results">
+      <app-icon name="user" [size]="28" />
+      <p>কাস্টমার পাওয়া যায়নি।</p>
+      <a class="button-secondary" routerLink="/customers">
+        <app-icon name="arrow-left" [size]="15" />
+        <span>তালিকায় ফিরে যান</span>
+      </a>
+    </div>
+  </section>
+}

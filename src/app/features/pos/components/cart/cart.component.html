@@ -1,0 +1,1 @@
+<div class="box"><div class="head"><b>Cart</b><button (click)="clear()">Clear</button></div><div class="item" *ngFor="let x of items;let i=index"><span>{{x.name}}</span><input type="number" min="1" [(ngModel)]="x.qty"><b>৳{{x.price*x.qty|number:'1.0-0'}}</b><button (click)="remove(i)">×</button></div><div class="total">Total <b>৳{{total|number:'1.0-0'}}</b></div></div>

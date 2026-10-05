@@ -1,0 +1,122 @@
+<section class="feature-page">
+  <header class="feature-page__header">
+    <div>
+      <a class="back-link" routerLink="/inventory"><app-icon name="arrow-left" [size]="15" /> ইনভেন্টরি</a>
+      <h2>স্টক মুভমেন্ট হিস্টোরি</h2>
+      <p>ক্রয়, বিক্রয়, সমন্বয়, ট্রান্সফার ও রিটার্নের সম্পূর্ণ লগ দেখুন।</p>
+    </div>
+    <a class="button-primary" routerLink="/inventory/adjustments">
+      <app-icon name="clipboard" [size]="16" /> Stock adjustment
+    </a>
+  </header>
+
+  <div class="metric-row">
+    <article class="metric-card">
+      <p>মোট Stock In</p>
+      <strong class="text-success">+{{ formatCount(totalIn()) }}</strong>
+      <small>ক্রয়, রিটার্ন ও ট্রান্সফার-ইন</small>
+    </article>
+    <article class="metric-card">
+      <p>মোট Stock Out</p>
+      <strong class="text-danger">−{{ formatCount(totalOut()) }}</strong>
+      <small>বিক্রয় ও সমন্বয়জনিত হ্রাস</small>
+    </article>
+    <article class="metric-card">
+      <p>নেট পরিবর্তন</p>
+      <strong [class.text-success]="netChange() >= 0" [class.text-danger]="netChange() < 0">
+        {{ netChange() >= 0 ? '+' : '' }}{{ formatCount(netChange()) }}
+      </strong>
+      <small>সকল মুভমেন্ট মিলিয়ে</small>
+    </article>
+  </div>
+
+  <section class="data-panel">
+    <div class="data-panel__toolbar">
+      <div class="toolbar-left">
+        <p>মুভমেন্ট তালিকা <span>({{ formatCount(filteredMovements().length) }}টি)</span></p>
+        <div class="filter-chips">
+          @for (filter of typeFilters; track filter.value) {
+            <button
+              type="button"
+              class="filter-chip"
+              [class.filter-chip--active]="typeFilter() === filter.value"
+              (click)="setTypeFilter(filter.value)"
+            >
+              {{ filter.label }}
+            </button>
+          }
+        </div>
+      </div>
+      <input
+        class="search-box"
+        placeholder="পণ্য, SKU বা রেফারেন্স খুঁজুন"
+        [value]="searchTerm()"
+        (input)="onSearchInput($any($event.target).value)"
+      />
+    </div>
+
+    @if (pagedMovements().length > 0) {
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>তারিখ</th>
+              <th>পণ্য</th>
+              <th>ধরন</th>
+              <th>পরিমাণ</th>
+              <th>Balance</th>
+              <th>রেফারেন্স</th>
+              <th>বিস্তারিত</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (m of pagedMovements(); track m.id) {
+              <tr>
+                <td>{{ formatDateBn(m.date) }}</td>
+                <td>
+                  <strong>{{ m.productName }}</strong>
+                  <small class="sku-label">{{ m.sku }}</small>
+                </td>
+                <td>
+                  <span class="movement-type" [class.movement-type--in]="m.direction === 'in'" [class.movement-type--out]="m.direction === 'out'">
+                    <app-icon [name]="m.direction === 'in' ? 'trending-up' : 'trending-down'" [size]="12" />
+                    {{ typeLabels[m.type] }}
+                  </span>
+                </td>
+                <td>
+                  <span [class.text-success]="m.direction === 'in'" [class.text-danger]="m.direction === 'out'">
+                    {{ m.direction === 'in' ? '+' : '−' }}{{ formatCount(m.quantity) }}
+                  </span>
+                </td>
+                <td>{{ formatCount(m.balanceAfter) }}</td>
+                <td><span class="reference-tag">{{ m.reference }}</span></td>
+                <td>
+                  @if (m.reason) {
+                    <span class="reason-note">{{ reasonLabels[m.reason] }}@if (m.note) { — {{ m.note }} }</span>
+                  } @else if (m.note) {
+                    <span class="reason-note">{{ m.note }}</span>
+                  } @else {
+                    <span class="reason-note reason-note--muted">—</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <footer class="data-panel__footer">
+        <span>{{ rangeLabel() }}</span>
+        <span>
+          <button type="button" class="page-link" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">‹ পূর্ববর্তী</button>
+          &nbsp;
+          <button type="button" class="page-link" [disabled]="currentPage() === totalPages()" (click)="goToPage(currentPage() + 1)">পরবর্তী ›</button>
+        </span>
+      </footer>
+    } @else {
+      <div class="no-results">
+        <app-icon name="search" [size]="28" />
+        <p>এই ফিল্টারে মিলে এমন কোনো মুভমেন্ট পাওয়া যায়নি।</p>
+      </div>
+    }
+  </section>
+</section>

@@ -1,0 +1,509 @@
+/* ============================================
+   REGISTER LAYOUT — Premium Split Screen
+   ============================================ */
+
+.auth-container {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+/* ============================================
+   🟣 LEFT SIDE
+   ============================================ */
+.auth-side {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  padding: 48px 50px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  /* sticky on scroll */
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  position: relative;
+  z-index: 2;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  backdrop-filter: blur(6px);
+}
+
+.side-content {
+  position: relative;
+  z-index: 2;
+  max-width: 480px;
+  margin: auto 0;
+}
+
+.auth-side h1 {
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 0 0 16px;
+  letter-spacing: -1.2px;
+}
+
+.side-desc {
+  font-size: 16px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0 0 36px;
+}
+
+/* ---------- Stats ---------- */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.stat-box {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  padding: 14px 12px;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.stat-box:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-3px);
+}
+
+.stat-num {
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  display: block;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+/* ---------- Testimonial ---------- */
+.testimonial {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 22px 22px 20px;
+  backdrop-filter: blur(10px);
+  position: relative;
+}
+
+.testimonial::before {
+  content: '"';
+  position: absolute;
+  top: -6px;
+  left: 18px;
+  font-size: 60px;
+  font-family: Georgia, serif;
+  color: rgba(255, 255, 255, 0.25);
+  line-height: 1;
+}
+
+.quote {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0 0 16px;
+  font-style: italic;
+}
+
+.quote-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #78350f;
+  font-weight: 800;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.quote-author strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.quote-author span {
+  display: block;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 2px;
+}
+
+/* ---------- Blobs ---------- */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.blob-1 {
+  width: 320px;
+  height: 320px;
+  background: rgba(255, 255, 255, 0.15);
+  top: -100px;
+  right: -100px;
+}
+
+.blob-2 {
+  width: 240px;
+  height: 240px;
+  background: rgba(251, 191, 36, 0.25);
+  bottom: -80px;
+  left: -60px;
+}
+
+.blob-3 {
+  width: 180px;
+  height: 180px;
+  background: rgba(139, 92, 246, 0.35);
+  top: 45%;
+  right: -60px;
+}
+
+/* ============================================
+   ⚪ RIGHT SIDE — REGISTER FORM
+   ============================================ */
+.auth-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 40px;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 500px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 40px 38px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f5;
+  box-sizing: border-box;
+  animation: fadeInUp 0.4s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.auth-card h2 {
+  margin: 0 0 26px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1f2937;
+  letter-spacing: -0.5px;
+}
+
+/* ---------- Alert ---------- */
+.alert-danger {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* ---------- Form ---------- */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+  width: 100%;
+  padding: 13px 15px;
+  font-size: 15px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  background: #f9fafb;
+  color: #111827;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus {
+  border-color: #667eea;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+}
+
+.form-group input.invalid {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.form-group input.invalid:focus {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+}
+
+.form-group small {
+  color: #ef4444;
+  font-size: 12.5px;
+  margin-top: 2px;
+}
+
+/* ---------- Checkbox Group ---------- */
+.checkbox-group {
+  margin-top: 2px;
+}
+
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #4b5563;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 500 !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: #667eea;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ---------- Button ---------- */
+.btn-submit {
+  width: 100%;
+  padding: 15px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  margin-top: 10px;
+  letter-spacing: 0.3px;
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(102, 126, 234, 0.4);
+}
+
+.btn-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #9ca3af;
+  box-shadow: none;
+}
+
+/* ---------- Footer ---------- */
+.auth-footer {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.auth-footer p { margin: 0; }
+
+.auth-footer a {
+  color: #667eea;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.auth-footer a:hover {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .auth-side { padding: 40px 32px; }
+  .auth-side h1 { font-size: 34px; }
+  .auth-card { padding: 34px 28px; }
+  .stat-num { font-size: 18px; }
+  .blob-1 { width: 240px; height: 240px; }
+  .blob-2 { width: 180px; height: 180px; }
+}
+
+/* Mobile — stack */
+@media (max-width: 768px) {
+  .auth-container {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-side {
+    position: relative;
+    height: auto;
+    min-height: auto;
+    padding: 32px 24px 40px;
+  }
+
+  .brand-logo { margin-bottom: 24px; }
+
+  .side-content { margin: 0; }
+
+  .auth-side h1 { font-size: 28px; }
+  .side-desc { font-size: 15px; margin-bottom: 24px; }
+
+  .stats-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .stat-box { padding: 12px 8px; }
+  .stat-num { font-size: 16px; }
+  .stat-label { font-size: 10px; }
+
+  .testimonial { padding: 18px; }
+  .quote { font-size: 13.5px; }
+
+  .auth-main { padding: 28px 20px 44px; }
+
+  .auth-card {
+    max-width: 100%;
+    padding: 30px 22px;
+  }
+
+  .auth-card h2 { font-size: 24px; margin-bottom: 22px; }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .auth-side { padding: 26px 18px 32px; }
+  .auth-side h1 { font-size: 24px; }
+  .side-desc { font-size: 14px; }
+
+  .stats-row { gap: 8px; }
+  .stat-box { padding: 10px 6px; border-radius: 10px; }
+  .stat-num { font-size: 14px; }
+  .stat-label { font-size: 9.5px; letter-spacing: 0.5px; }
+
+  .testimonial { padding: 16px; }
+  .quote { font-size: 13px; }
+  .avatar { width: 34px; height: 34px; font-size: 14px; }
+
+  .auth-main { padding: 22px 14px 36px; }
+  .auth-card { padding: 24px 18px; border-radius: 14px; }
+
+  .auth-card h2 { font-size: 22px; }
+
+  .form-group input[type="text"],
+  .form-group input[type="email"],
+  .form-group input[type="password"] {
+    padding: 12px 14px;
+    font-size: 14.5px;
+  }
+
+  .btn-submit {
+    padding: 13px;
+    font-size: 15px;
+  }
+}
+
+
+/* ---------- Brand logo (ShopKhata) ---------- */
+.brand-logo .logo-icon svg {
+  width: 18px;
+  height: 18px;
+  color: #ffffff;
+}
+
+.brand-logo .logo-text {
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.3px;
+}
+
+.brand-logo .logo-text strong {
+  color: #fbbf24;
+  font-weight: 800;
+}

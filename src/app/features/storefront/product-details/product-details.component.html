@@ -1,0 +1,28 @@
+<app-store-header />
+@if (product(); as p) {
+  <section class="store-detail">
+    <a class="back-link" routerLink="/store/products"><app-icon name="arrow-left" [size]="15" /> সব পণ্য</a>
+    <div class="store-detail__grid">
+      <img [src]="p.imageUrl" [alt]="p.name" />
+      <div>
+        <h2>{{ p.name }}</h2>
+        <p class="store-detail__price">{{ formatTaka(p.salePrice) }} <small>/ {{ p.unit }}</small></p>
+        <p>{{ p.description }}</p>
+        <p><small>{{ p.brand }} &middot; {{ p.category }}</small></p>
+        <div class="qty-control">
+          <button type="button" (click)="decQty()">−</button>
+          <span>{{ qty() }}</span>
+          <button type="button" (click)="incQty()">+</button>
+        </div>
+        <button type="button" class="button-primary" (click)="addToCart()"><app-icon name="cart" [size]="16" /> কার্টে যুক্ত করুন</button>
+      </div>
+    </div>
+  </section>
+} @else {
+  <section class="feature-page">
+    <div class="no-results">
+      <p>পণ্য পাওয়া যায়নি।</p>
+      <a class="button-secondary" routerLink="/store/products">সব পণ্য দেখুন</a>
+    </div>
+  </section>
+}

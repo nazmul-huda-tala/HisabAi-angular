@@ -1,0 +1,242 @@
+<section class="feature-page report-page">
+
+  <!-- ===== Header ===== -->
+  <header class="feature-page__header report-header anim-fade-up" style="--delay: 0ms">
+    <div class="header-main">
+      <div class="eyebrow">
+        <app-icon name="bar-chart" [size]="15" />
+        <span>REPORTS / SALES</span>
+      </div>
+      <h2>Sales report</h2>
+      <p>বিক্রয়, payment collection এবং customer performance একসাথে দেখুন।</p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="button-secondary" (click)="printReport()">
+        <app-icon name="file-text" [size]="16" />
+        <span>Print</span>
+      </button>
+      <button type="button" class="button-primary" (click)="exportCsv()">
+        <app-icon name="arrow-down" [size]="16" />
+        <span>Export CSV</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== Notice ===== -->
+  @if (notice) {
+    <div class="report-notice anim-fade-up" style="--delay: 40ms">
+      <span>{{ notice }}</span>
+    </div>
+  }
+
+  <!-- ===== Filter Panel ===== -->
+  <section class="filter-panel anim-fade-up" style="--delay: 80ms">
+    <div class="filter-title">
+      <span>Report period</span>
+      <small>তারিখ দিয়ে report সীমিত করুন</small>
+    </div>
+
+    <label class="filter-field">
+      <span>From</span>
+      <input type="date" [(ngModel)]="fromDate" />
+    </label>
+
+    <label class="filter-field">
+      <span>To</span>
+      <input type="date" [(ngModel)]="toDate" />
+    </label>
+
+    <label class="filter-field">
+      <span>Status</span>
+      <select [(ngModel)]="statusFilter">
+        <option value="All">All status</option>
+        <option value="Paid">Paid</option>
+        <option value="Partial">Partial</option>
+        <option value="Due">Due</option>
+      </select>
+    </label>
+
+    <button type="button" class="filter-reset" (click)="resetFilters()">
+      <span>Reset</span>
+    </button>
+  </section>
+
+  <!-- ===== Metric Row ===== -->
+  <div class="metric-row report-metrics">
+
+    <article class="metric-card metric-card--primary anim-fade-up" style="--delay: 140ms">
+      <p>Total sales</p>
+      <strong>{{ formatMoney(totalSales) }}</strong>
+      <small>{{ rows.length }}টি invoice</small>
+    </article>
+
+    <article class="metric-card anim-fade-up" style="--delay: 180ms">
+      <p>Collected</p>
+      <strong>{{ formatMoney(totalPaid) }}</strong>
+      <small>মোট sales-এর {{ totalSales ? (totalPaid / totalSales * 100 | number:'1.0-0') : 0 }}%</small>
+    </article>
+
+    <article class="metric-card metric-card--warning anim-fade-up" style="--delay: 220ms">
+      <p>Outstanding</p>
+      <strong>{{ formatMoney(totalDue) }}</strong>
+      <small>Customer due</small>
+    </article>
+
+    <article class="metric-card anim-fade-up" style="--delay: 260ms">
+      <p>Average invoice</p>
+      <strong>{{ formatMoney(averageOrder) }}</strong>
+      <small>প্রতি invoice</small>
+    </article>
+
+  </div>
+
+  <!-- ===== Charts Grid ===== -->
+  <div class="report-grid">
+
+    <!-- Sales trend -->
+    <section class="report-card chart-card anim-fade-up" style="--delay: 300ms">
+      <div class="card-heading">
+        <div>
+          <h3>Sales trend</h3>
+          <p>গত ৭ দিনের বিক্রয়</p>
+        </div>
+        <span class="legend">
+          <i class="legend-dot"></i>
+          <span>Sales</span>
+        </span>
+      </div>
+
+      <div class="bar-chart" aria-label="Seven day sales chart">
+        @for (day of dailySales; track day.label) {
+          <div class="bar-column">
+            <span class="bar-value">{{ formatMoney(day.value) }}</span>
+            <div class="bar" [style.height.%]="day.value / maxDailySales * 100"></div>
+            <small class="bar-label">{{ day.label }}</small>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Collection health -->
+    <section class="report-card insight-card anim-fade-up" style="--delay: 340ms">
+      <div class="card-heading">
+        <div>
+          <h3>Collection health</h3>
+          <p>Invoice payment overview</p>
+        </div>
+        <span class="card-icon">
+          <app-icon name="trending-up" [size]="19" />
+        </span>
+      </div>
+
+      <div class="health-ring">
+        <div class="health-ring__inner">
+          <strong>{{ totalSales ? (totalPaid / totalSales * 100 | number:'1.0-0') : 0 }}%</strong>
+          <small>collected</small>
+        </div>
+      </div>
+
+      <div class="health-rows">
+        <div class="health-row">
+          <span class="health-row__label">
+            <i class="dot dot--success"></i>
+            <span>Paid</span>
+          </span>
+          <strong>{{ formatMoney(totalPaid) }}</strong>
+        </div>
+        <div class="health-row">
+          <span class="health-row__label">
+            <i class="dot dot--warning"></i>
+            <span>Due</span>
+          </span>
+          <strong>{{ formatMoney(totalDue) }}</strong>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ===== Table Card ===== -->
+  <section class="report-card table-card anim-fade-up" style="--delay: 380ms">
+
+    <div class="card-heading table-heading">
+      <div>
+        <h3>Sales transactions</h3>
+        <p>{{ rows.length }}টি result দেখানো হচ্ছে</p>
+      </div>
+      <input
+        class="search-box"
+        type="search"
+        [(ngModel)]="searchTerm"
+        placeholder="Invoice বা customer খুঁজুন"
+        aria-label="Search sales report"
+      />
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table report-table">
+        <thead>
+          <tr>
+            <th>Invoice</th>
+            <th>Date</th>
+            <th>Customer</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Paid</th>
+            <th>Due</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows; track row.id) {
+            <tr>
+
+              <td class="invoice-cell">
+                <strong>{{ row.invoice }}</strong>
+                <small>{{ row.time }}</small>
+              </td>
+
+              <td class="time-cell">{{ formatDate(row.date) }}</td>
+
+              <td class="customer-cell">{{ row.customer }}</td>
+
+              <td class="num-cell">{{ row.items }}</td>
+
+              <td class="amount-cell amount-cell--total">
+                <strong>{{ formatMoney(row.total) }}</strong>
+              </td>
+
+              <td class="amount-cell amount-cell--paid">
+                {{ formatMoney(row.paid) }}
+              </td>
+
+              <td class="amount-cell amount-cell--due">
+                {{ formatMoney(row.total - row.paid) }}
+              </td>
+
+              <td>
+                <span
+                  class="status"
+                  [class.status--warning]="row.status === 'Partial'"
+                  [class.status--danger]="row.status === 'Due'"
+                >
+                  {{ row.status }}
+                </span>
+              </td>
+
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8" class="empty-row">
+                <p>এই filter-এ কোনো sales record পাওয়া যায়নি।</p>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+</section>

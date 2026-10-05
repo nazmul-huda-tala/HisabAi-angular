@@ -1,0 +1,40 @@
+<section class="feature-page">
+  <div class="feature-page__header">
+    <div>
+      <h2>পেমেন্ট তালিকা</h2>
+      <p>কাস্টমার ও সরবরাহকারীর সব পেমেন্ট এন্ট্রি এক জায়গায়। (Demo — ব্যাকএন্ড কানেকশন নেই)</p>
+    </div>
+    <a class="button-primary" routerLink="/payments/receive">নতুন পেমেন্ট</a>
+  </div>
+
+  <div class="metric-row">
+    <article class="metric-card"><p>মোট গৃহীত/পরিশোধিত</p><strong>{{ formatTaka(totalReceived()) }}</strong><small>{{ payments().length }} টি এন্ট্রি</small></article>
+  </div>
+
+  <div class="data-panel">
+    <div class="data-panel__toolbar">
+      <div><p>পেমেন্ট এন্ট্রি</p><span>Demo data — ব্যাকএন্ড কানেকশন নেই</span></div>
+      <input class="search-box" type="search" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)" placeholder="নাম খুঁজুন..." aria-label="Search payments" />
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>তারিখ</th><th>নাম</th><th>ধরন</th><th>মাধ্যম</th><th>পরিমাণ</th><th>নোট</th></tr></thead>
+        <tbody>
+          @for (item of payments(); track item.id) {
+            <tr>
+              <td>{{ formatDateBn(item.date) }}</td>
+              <td><strong>{{ item.partyName }}</strong></td>
+              <td>{{ partyTypeLabels[item.partyType] }}</td>
+              <td>{{ methodLabels[item.method] }}</td>
+              <td><strong>{{ formatTaka(item.amount) }}</strong></td>
+              <td>{{ item.note || '—' }}</td>
+            </tr>
+          } @empty {
+            <tr><td colspan="6" class="empty-row">কোনো পেমেন্ট এন্ট্রি পাওয়া যায়নি।</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

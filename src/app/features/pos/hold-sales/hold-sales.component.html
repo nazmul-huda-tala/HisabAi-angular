@@ -1,0 +1,22 @@
+<div class="held-page">
+  <header class="page-head">
+    <div><span class="eyebrow">POS WORKFLOW</span><h1>Held Sales</h1><p>কাস্টমার বদলানোর সময় রাখা অসম্পূর্ণ বিক্রয়গুলো এখান থেকে আবার চালু করুন।</p></div>
+    <div class="actions"><a class="btn secondary" routerLink="/pos">← POS-এ ফিরে যান</a><button class="btn danger" type="button" (click)="clearAll()" [disabled]="!heldSales.length">সব মুছুন</button></div>
+  </header>
+  @if(message){<div class="toast">{{message}}</div>}
+  @if(heldSales.length){
+    <div class="held-grid">
+      @for(sale of heldSales; track sale.id){
+        <article class="held-card">
+          <div class="card-top"><div><span class="invoice">HOLD #{{sale.id.toString().slice(-5)}}</span><h2>{{sale.customer}}</h2></div><span class="time">{{sale.time}}</span></div>
+          <div class="items">
+            @for(item of sale.items; track item.id){<div><span>{{item.name}} × {{item.qty}}</span><b>৳{{item.price * item.qty}}</b></div>}
+          </div>
+          <div class="card-foot"><strong>৳{{sale.total.toFixed(2)}}</strong><span>{{getItemsCount(sale)}} পিস</span><div><button class="btn small danger" type="button" (click)="remove(sale)">মুছুন</button><button class="btn small primary" type="button" (click)="resume(sale)">▶ আবার চালু করুন</button></div></div>
+        </article>
+      }
+    </div>
+  } @else {
+    <div class="empty"><div>⏸</div><h2>কোনো Held Sale নেই</h2><p>POS থেকে কোনো বিক্রয় Hold করলে সেটি এখানে দেখা যাবে।</p><a class="btn primary" routerLink="/pos">POS খুলুন</a></div>
+  }
+</div>

@@ -1,0 +1,50 @@
+<section class="feature-page due-page">
+  <div class="feature-page__header">
+    <div>
+      <h2>সরবরাহকারীর পরিশোধ্য</h2>
+      <p>সরবরাহকারীদের পরিশোধ্য হিসাব এবং পেমেন্ট এক জায়গা থেকে দেখুন।</p>
+    </div>
+    <a class="button-primary" routerLink="/payments/receive">পেমেন্ট দিন</a>
+  </div>
+
+  <div class="metric-row">
+    <article class="metric-card"><p>মোট পরিশোধ্য</p><strong>{{ formatTaka(totalPayable()) }}</strong><small>{{ allPayables.length }} জন সরবরাহকারীর পরিশোধ্য আছে</small></article>
+    <article class="metric-card"><p>ওভারডিউ পরিমাণ</p><strong>{{ formatTaka(overdue()) }}</strong><small>অগ্রাধিকার দিয়ে পরিশোধ করুন</small></article>
+    <article class="metric-card"><p>সরবরাহকারী সংখ্যা</p><strong>{{ allPayables.length }}</strong><small>Static demo রেকর্ড</small></article>
+  </div>
+
+  <div class="data-panel">
+    <div class="data-panel__toolbar">
+      <div><p>সরবরাহকারীর পরিশোধ্য তালিকা</p><span>Demo data — ব্যাকএন্ড কানেকশন নেই</span></div>
+      <input class="search-box" type="search" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)" placeholder="সরবরাহকারী খুঁজুন..." aria-label="Search supplier payable" />
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>সরবরাহকারী</th><th>পেমেন্ট শর্ত</th><th>পরিশোধ্য</th><th>অবস্থা</th><th>একশন</th></tr></thead>
+        <tbody>
+          @for (item of payables(); track item.id) {
+            <tr>
+              <td><strong>{{ item.companyName }}</strong><br><small>{{ item.name }} · {{ item.phone }}</small></td>
+              <td>{{ item.paymentTerms }}</td>
+              <td><strong>{{ formatTaka(item.payable) }}</strong></td>
+              <td><span class="status" [class.status--danger]="item.status === 'Overdue'" [class.status--warning]="item.status === 'Due soon'">{{ item.status }}</span></td>
+              <td class="actions">
+                <a class="row-action" [routerLink]="['/suppliers', item.id]">দেখুন</a>
+                <a class="row-action" [routerLink]="['/suppliers', item.id, 'statement']">স্টেটমেন্ট</a>
+                <button type="button" class="mini-button" (click)="goToReceive(item)">পরিশোধ করুন</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="empty-row">কোনো সরবরাহকারীর পরিশোধ্য পাওয়া যায়নি।</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="data-panel__footer">
+      <span>{{ payables().length }} / {{ allPayables.length }} রেকর্ড দেখানো হচ্ছে</span>
+      @if (searchTerm()) { <button type="button" class="clear-button" (click)="clearSearch()">খুঁজা মুছুন</button> }
+    </div>
+  </div>
+</section>

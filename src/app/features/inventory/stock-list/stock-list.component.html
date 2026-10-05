@@ -1,0 +1,196 @@
+<section class="feature-page">
+
+  <!-- ===== Header ===== -->
+  <header class="feature-page__header anim-fade-up" style="--delay: 0ms">
+    <div>
+      <h2>ইনভেন্টরি</h2>
+      <p>বর্তমান stock, value ও low-stock পণ্য পর্যবেক্ষণ করুন।</p>
+    </div>
+
+    <div class="header-actions">
+      <a class="button-secondary" routerLink="/inventory/movements">
+        <app-icon name="layers" [size]="16" />
+        <span>মুভমেন্ট হিস্টোরি</span>
+      </a>
+      <a class="button-primary" routerLink="/inventory/adjustments">
+        <app-icon name="clipboard" [size]="16" />
+        <span>Stock adjustment</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ===== Metric Row ===== -->
+  <div class="metric-row">
+
+    <article class="metric-card anim-fade-up" style="--delay: 80ms">
+      <p>মোট Stock Value</p>
+      <strong>{{ formatTaka(totalStockValue()) }}</strong>
+      <small>{{ formatCount(totalItemsCount()) }}টি পণ্য</small>
+    </article>
+
+    <article class="metric-card metric-card--warning anim-fade-up" style="--delay: 140ms">
+      <p>লো স্টক</p>
+      <strong>{{ formatCount(lowStockCount()) }}</strong>
+      <small>পুনরায় order প্রয়োজন</small>
+    </article>
+
+    <article class="metric-card metric-card--danger anim-fade-up" style="--delay: 200ms">
+      <p>Out of stock</p>
+      <strong>{{ formatCount(outOfStockCount()) }}</strong>
+      <small>দ্রুত ব্যবস্থা নিন</small>
+    </article>
+
+  </div>
+
+  <!-- ===== Data Panel ===== -->
+  <section class="data-panel anim-fade-up" style="--delay: 260ms">
+
+    <div class="data-panel__toolbar">
+      <div class="toolbar-left">
+        <p>
+          বর্তমান Stock
+          <span>({{ formatCount(filteredItems().length) }}টি পণ্য)</span>
+        </p>
+
+        <div class="filter-chips">
+          @for (filter of statusFilters; track filter.value) {
+            <button
+              type="button"
+              class="filter-chip"
+              [class.filter-chip--active]="statusFilter() === filter.value"
+              (click)="setStatusFilter(filter.value)"
+            >
+              {{ filter.label }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <input
+        class="search-box"
+        placeholder="পণ্য বা SKU খুঁজুন"
+        [value]="searchTerm()"
+        (input)="onSearchInput($any($event.target).value)"
+      />
+    </div>
+
+    @if (pagedItems().length > 0) {
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>পণ্য</th>
+              <th>ক্যাটাগরি</th>
+              <th>বর্তমান Stock</th>
+              <th>Reorder level</th>
+              <th>Stock value</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of pagedItems(); track item.id) {
+              <tr>
+
+                <td class="product-cell">
+                  <strong>{{ item.name }}</strong>
+                  <small class="sku-label">{{ item.sku }}</small>
+                </td>
+
+                <td>{{ item.category }}</td>
+
+                <td class="num-cell">
+                  {{ formatCount(item.currentStock) }}
+                  <span class="unit">{{ item.unit }}</span>
+                </td>
+
+                <td class="num-cell">
+                  {{ formatCount(item.reorderLevel) }}
+                  <span class="unit">{{ item.unit }}</span>
+                </td>
+
+                <td class="num-cell taka-amount">
+                  {{ formatTaka(stockValueOf(item)) }}
+                </td>
+
+                <td>
+                  @switch (statusOf(item)) {
+
+                    @case ('healthy') {
+                      <span class="status">
+                        {{ statusLabels.healthy }}
+                      </span>
+                    }
+
+                    @case ('low') {
+                      <span class="status status--warning">
+                        <app-icon name="alert-triangle" [size]="11" />
+                        {{ statusLabels.low }}
+                      </span>
+                    }
+
+                    @case ('out') {
+                      <span class="status status--danger">
+                        <app-icon name="alert-triangle" [size]="11" />
+                        {{ statusLabels.out }}
+                      </span>
+                    }
+
+                  }
+                </td>
+
+                <td>
+                  <a
+                    class="row-action"
+                    [routerLink]="['/inventory/adjustments']"
+                    [queryParams]="{ productId: item.id }"
+                  >
+                    <app-icon name="edit-2" [size]="13" />
+                    <span>সমন্বয়</span>
+                  </a>
+                </td>
+
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <footer class="data-panel__footer">
+        <span class="range-label">{{ rangeLabel() }}</span>
+
+        <span class="pager">
+          <button
+            type="button"
+            class="page-link"
+            [disabled]="currentPage() === 1"
+            (click)="goToPage(currentPage() - 1)"
+          >
+            ‹ পূর্ববর্তী
+          </button>
+          <button
+            type="button"
+            class="page-link"
+            [disabled]="currentPage() === totalPages()"
+            (click)="goToPage(currentPage() + 1)"
+          >
+            পরবর্তী ›
+          </button>
+        </span>
+      </footer>
+
+    } @else {
+
+      <div class="no-results">
+        <span class="no-results__icon">
+          <app-icon name="search" [size]="24" />
+        </span>
+        <p>"{{ searchTerm() }}" এর সাথে মিলে এমন কোনো পণ্য পাওয়া যায়নি।</p>
+      </div>
+
+    }
+
+  </section>
+
+</section>

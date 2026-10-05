@@ -1,0 +1,70 @@
+<div class="portal-shell" [class.portal-shell--collapsed]="!sidebarOpen">
+  <aside class="portal-sidebar">
+    <div class="portal-sidebar__brand">
+      <a routerLink="/portal/home" class="portal-brand">
+        <span class="portal-brand__mark">H</span>
+        <span>
+          <strong>HisabKhata</strong>
+          <small>Customer Portal</small>
+        </span>
+      </a>
+      <button type="button" class="portal-collapse" (click)="toggleSidebar()" [attr.aria-label]="sidebarOpen ? 'Sidebar collapse' : 'Sidebar expand'">
+        {{ sidebarOpen ? '‹' : '›' }}
+      </button>
+    </div>
+
+    <div class="portal-customer-card">
+      <div class="portal-avatar">{{ portal.currentCustomer()?.name?.charAt(0) || 'C' }}</div>
+      <div class="portal-customer-card__text">
+        <strong>{{ portal.currentCustomer()?.name }}</strong>
+        <span>Customer account</span>
+      </div>
+    </div>
+
+    <nav class="portal-nav" aria-label="Customer navigation">
+      <a routerLink="/portal/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" title="হোম">
+        <span>⌂</span><b>হোম</b>
+      </a>
+      <a routerLink="/portal/shop" routerLinkActive="active" title="পণ্য">
+        <span>🛍</span><b>পণ্য দেখুন</b>
+      </a>
+      <a routerLink="/portal/orders" routerLinkActive="active" title="আমার অর্ডার">
+        <span>▣</span><b>আমার অর্ডার</b>
+      </a>
+      <a routerLink="/portal/profile" routerLinkActive="active" title="প্রোফাইল">
+        <span>◉</span><b>প্রোফাইল</b>
+      </a>
+    </nav>
+
+    <div class="portal-sidebar__bottom">
+      <a routerLink="/store" title="Public store"><span>↗</span><b>Public Store</b></a>
+      <button type="button" (click)="logout()" title="Logout"><span>⇥</span><b>লগআউট</b></button>
+    </div>
+  </aside>
+
+  <section class="portal-workspace">
+    <header class="portal-topbar">
+      <div class="portal-topbar__left">
+        <button type="button" class="mobile-menu" (click)="toggleSidebar()" aria-label="Menu">☰</button>
+        <div>
+          <span class="portal-topbar__eyebrow">HisabKhata Customer Portal</span>
+          <h1>আপনার শপিং ও অর্ডার</h1>
+        </div>
+      </div>
+      <div class="portal-topbar__right">
+        <a routerLink="/portal/shop" class="cart-link">🛒 <span>কেনাকাটা</span></a>
+        <div class="top-avatar">{{ portal.currentCustomer()?.name?.charAt(0) || 'C' }}</div>
+      </div>
+    </header>
+
+    <main class="portal-content">
+      <router-outlet />
+    </main>
+
+    <footer class="portal-footer">
+      <span>© {{ currentYear }} HisabKhata</span>
+      <span>নিরাপদ কাস্টমার পোর্টাল</span>
+      <a href="mailto:support@hishabai.com">support&#64;hishabai.com</a>
+    </footer>
+  </section>
+</div>

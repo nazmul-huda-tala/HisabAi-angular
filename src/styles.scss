@@ -1,0 +1,247 @@
+// ─────────────────────────────────────────────────────────
+// HisabKhata — Global design tokens & base styles
+// Palette: taka-note teal (trust/money) + turmeric amber accent
+// Type: Baloo Da 2 (headings) + Hind Siliguri (UI/body) — both Bengali-native
+// ─────────────────────────────────────────────────────────
+
+:root {
+  // Brand
+  --color-primary: #0e6b5c;
+  --color-primary-dark: #0a4f44;
+  --color-primary-soft: #e2f1ec;
+  --color-accent: #d98e2b;
+  --color-accent-soft: #fbf0dd;
+
+  // Sidebar (deep teal-black, not navy)
+  --color-sidebar: #0b2320;
+  --color-sidebar-elevated: #123430;
+  --color-sidebar-muted: #9fc2ba;
+
+  // Surfaces
+  --color-page: #f3f4f1;
+  --color-surface: #ffffff;
+  --color-text: #16231f;
+  --color-muted: #62726c;
+  --color-border: #e1e5e1;
+
+  // Status
+  --color-success: #0e6b5c;
+  --color-success-soft: #e2f1ec;
+  --color-warning: #b4791f;
+  --color-warning-soft: #fbf0dd;
+  --color-danger: #b23b34;
+  --color-danger-soft: #fbe9e8;
+
+  --shadow-card: 0 2px 10px rgb(11 35 32 / 6%);
+  --shadow-lifted: 0 12px 28px rgb(11 35 32 / 14%);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+
+  --font-display: 'Baloo Da 2', 'Hind Siliguri', ui-sans-serif, sans-serif;
+  --font-body: 'Hind Siliguri', 'Baloo Da 2', ui-sans-serif, system-ui, sans-serif;
+
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-page);
+}
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body { margin: 0; background: var(--color-page); font-size: 15px; line-height: 1.6; }
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; letter-spacing: -.2px; }
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+
+// Visible keyboard focus everywhere — accessibility floor
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+// ── Shared entrance/attention animations ───────────────────
+// One orchestrated load-in sequence (staggered via --delay), plus a couple
+// of purposeful micro-interactions. Used sparingly, not on every element.
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes draw-line {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgb(217 142 43 / 45%); }
+  70% { box-shadow: 0 0 0 6px rgb(217 142 43 / 0%); }
+  100% { box-shadow: 0 0 0 0 rgb(217 142 43 / 0%); }
+}
+
+.anim-fade-up {
+  animation: fade-up .5s cubic-bezier(.2, .7, .3, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+// ── Shared page shell (used by every feature module) ──────
+.feature-page {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 24px 28px 48px;
+}
+
+.feature-page__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.feature-page__header h2 {
+  margin: 0;
+  font-size: 25px;
+}
+
+.feature-page__header p {
+  margin: 4px 0 0;
+  color: var(--color-muted);
+  font-size: 13.5px;
+}
+
+// ── Buttons ─────────────────────────────────────────────
+.button-primary,
+.button-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 15px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .15s ease, border-color .15s ease, transform .1s ease;
+}
+
+.button-primary {
+  border: 1px solid var(--color-primary);
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.button-primary:hover { background: var(--color-primary-dark); }
+.button-primary:active { transform: translateY(1px); }
+
+.button-secondary {
+  border: 1px solid var(--color-border);
+  background: #fff;
+  color: var(--color-text);
+}
+
+.button-secondary:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+// ── Metric row (used across report/list pages) ───────────
+.metric-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.metric-card {
+  padding: 16px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.metric-card p { margin: 0; color: var(--color-muted); font-size: 12.5px; font-weight: 700; }
+.metric-card strong { display: block; margin-top: 5px; font-family: var(--font-display); font-size: 24px; }
+.metric-card small { color: var(--color-muted); font-size: 12px; }
+
+// ── Data panel + table (list pages) ───────────────────────
+.data-panel {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.data-panel__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.data-panel__toolbar p { margin: 0; font-size: 13px; font-weight: 700; }
+.data-panel__toolbar span { color: var(--color-muted); font-size: 11px; }
+
+.search-box {
+  width: min(260px, 48vw);
+  padding: 9px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  color: var(--color-text);
+}
+
+.search-box:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); }
+
+.table-wrap { overflow-x: auto; }
+
+.data-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+.data-table th {
+  padding: 11px 18px;
+  background: #f8faf9;
+  color: var(--color-muted);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  text-align: left;
+}
+.data-table td { padding: 13px 18px; border-top: 1px solid var(--color-border); color: #35433e; font-size: 12.5px; }
+.data-table td strong { color: var(--color-text); }
+
+.status { display: inline-flex; padding: 3px 9px; border-radius: 999px; background: var(--color-success-soft); color: var(--color-success); font-size: 10.5px; font-weight: 700; }
+.status--warning { background: var(--color-warning-soft); color: var(--color-warning); }
+.status--danger { background: var(--color-danger-soft); color: var(--color-danger); }
+
+.row-action { color: var(--color-primary); font-weight: 700; text-decoration: none; }
+.data-panel__footer { display: flex; justify-content: space-between; padding: 12px 18px; color: var(--color-muted); font-size: 11px; }
+
+// ── Responsive floor ───────────────────────────────────────
+@media (max-width: 1050px) {
+  .metric-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 620px) {
+  .feature-page { padding: 18px 16px 36px; }
+  .feature-page__header { align-items: flex-start; flex-direction: column; }
+  .metric-row { grid-template-columns: 1fr; }
+  .data-panel__toolbar { align-items: flex-start; flex-direction: column; }
+  .search-box { width: 100%; }
+}
+
+/* ── API error banner (shown when a backend call fails) ── */
+.api-error {
+  margin: 0 0 16px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #fdecea;
+  border: 1px solid #f5c2bd;
+  color: #a12a1f;
+  font-size: 0.9rem;
+}

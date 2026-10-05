@@ -1,0 +1,19 @@
+<header class="portal-header">
+  <div class="portal-header__brand">
+    <span class="portal-header__logo">HisabKhata</span>
+    <span class="portal-header__tag">কাস্টমার পোর্টাল</span>
+  </div>
+
+  <nav class="portal-header__nav">
+    <a routerLink="/portal/orders" routerLinkActive="active">আমার অর্ডার</a>
+    <a routerLink="/portal/profile" routerLinkActive="active">প্রোফাইল</a>
+  </nav>
+
+  <div class="portal-header__user">
+    <span class="portal-header__name">{{ portal.currentCustomer()?.name }}</span>
+    <button type="button" class="portal-header__logout" (click)="logout()">
+      <app-icon name="log-out" [size]="16" />
+      লগআউট
+    </button>
+  </div>
+</header>

@@ -1,0 +1,132 @@
+<section class="feature-page due-page">
+
+  <!-- ===== Header ===== -->
+  <div class="feature-page__header anim-fade-up" style="--delay: 0ms">
+    <div>
+      <h2>বাকির হিসাব</h2>
+      <p>কাস্টমারদের বাকি হিসাব, পেমেন্ট এবং স্টেটমেন্ট এক জায়গা থেকে দেখুন।</p>
+    </div>
+    <a class="button-primary" routerLink="/payments/receive">
+      <span>পেমেন্ট গ্রহণ</span>
+    </a>
+  </div>
+
+  <!-- ===== Metric Row ===== -->
+  <div class="metric-row">
+
+    <article class="metric-card anim-fade-up" style="--delay: 80ms">
+      <p>মোট বাকি</p>
+      <strong>{{ formatTaka(totalDue()) }}</strong>
+      <small>{{ customersWithDue() }} জন কাস্টমারের বাকি আছে</small>
+    </article>
+
+    <article class="metric-card metric-card--warning anim-fade-up" style="--delay: 140ms">
+      <p>ওভারডিউ পরিমাণ</p>
+      <strong>{{ formatTaka(overdue()) }}</strong>
+      <small>অগ্রাধিকার দিয়ে যোগাযোগ করুন</small>
+    </article>
+
+    <article class="metric-card metric-card--info anim-fade-up" style="--delay: 200ms">
+      <p>কাস্টমার সংখ্যা</p>
+      <strong>{{ customersWithDue() }}</strong>
+      <small>Static demo রেকর্ড</small>
+    </article>
+
+  </div>
+
+  <!-- ===== Data Panel ===== -->
+  <div class="data-panel anim-fade-up" style="--delay: 260ms">
+
+    <div class="data-panel__toolbar">
+      <div class="toolbar-left">
+        <p>কাস্টমার বাকির তালিকা</p>
+        <span class="toolbar-note">Demo data — ব্যাকএন্ড কানেকশন নেই</span>
+      </div>
+
+      <input
+        class="search-box"
+        type="search"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="searchTerm.set($event)"
+        placeholder="কাস্টমার / ইনভয়েস খুঁজুন..."
+        aria-label="Search customer due"
+      />
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>কাস্টমার</th>
+            <th>রেফারেন্স</th>
+            <th>শেষ কার্যক্রম</th>
+            <th>বাকি</th>
+            <th>অবস্থা</th>
+            <th class="text-right">একশন</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of dues(); track item.id) {
+            <tr>
+
+              <td class="customer-cell">
+                <strong>{{ item.name }}</strong>
+                <small class="phone-label">{{ item.phone }}</small>
+              </td>
+
+              <td class="ref-cell">{{ item.reference }}</td>
+
+              <td class="time-cell">{{ item.lastActivity }}</td>
+
+              <td class="amount-cell">
+                <strong>{{ formatTaka(item.due) }}</strong>
+              </td>
+
+              <td>
+                <span
+                  class="status"
+                  [class.status--danger]="item.status === 'Overdue'"
+                  [class.status--warning]="item.status === 'Due soon'"
+                >
+                  {{ item.status }}
+                </span>
+              </td>
+
+              <td class="actions">
+                <a class="row-action" [routerLink]="['/customers', item.id]">
+                  দেখুন
+                </a>
+                <a class="row-action" [routerLink]="['/customers', item.id, 'statement']">
+                  স্টেটমেন্ট
+                </a>
+                <button type="button" class="mini-button" (click)="goToReceive(item)">
+                  গ্রহণ করুন
+                </button>
+              </td>
+
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="empty-row">
+                <p>কোনো কাস্টমার বাকি পাওয়া যায়নি।</p>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="data-panel__footer">
+      <span class="range-label">
+        {{ dues().length }} / {{ allDues.length }} রেকর্ড দেখানো হচ্ছে
+      </span>
+      @if (searchTerm()) {
+        <button type="button" class="clear-button" (click)="clearSearch()">
+          <span>খুঁজা মুছুন</span>
+        </button>
+      }
+    </div>
+
+  </div>
+
+</section>

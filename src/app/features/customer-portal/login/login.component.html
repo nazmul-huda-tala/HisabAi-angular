@@ -1,0 +1,35 @@
+<div class="portal-auth">
+  <div class="portal-auth__card">
+    <div class="portal-auth__brand">
+      <span class="portal-auth__logo">HisabKhata</span>
+      <p>কাস্টমার পোর্টালে লগইন করুন</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="portal-auth__form">
+      <label>
+        মোবাইল নাম্বার
+        <input type="text" formControlName="phone" placeholder="01XXXXXXXXX" />
+      </label>
+
+      <label>
+        পাসওয়ার্ড
+        <input type="password" formControlName="password" placeholder="পাসওয়ার্ড দিন" />
+      </label>
+
+      @if (errorMessage) {
+        <p class="portal-auth__error">{{ errorMessage }}</p>
+      }
+
+      <button type="submit" class="portal-auth__submit" [disabled]="isLoading">
+        {{ isLoading ? 'লগইন হচ্ছে...' : 'লগইন করুন' }}
+      </button>
+    </form>
+
+    <p class="portal-auth__hint">
+      ডেমো লগইন: <strong>01711112233</strong> / <strong>demo1234</strong>
+    </p>
+    <p class="portal-auth__staff-link">
+      আপনি কি দোকানের স্টাফ? <a routerLink="/auth/login">এখানে লগইন করুন</a>
+    </p>
+  </div>
+</div>

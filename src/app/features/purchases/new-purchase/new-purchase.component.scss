@@ -1,0 +1,225 @@
+.purchase-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  .header-card, .supplier-card, .table-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+  }
+
+  /* Header Section */
+  .header-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: linear-gradient(135deg, #0f5132 0%, #0b3d26 100%);
+    color: #ffffff;
+    border: none;
+
+    .badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    h2 {
+      margin: 10px 0 4px 0;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0;
+      color: #e2e8f0;
+      font-size: 14px;
+
+      .highlight {
+        color: #a7f3d0;
+      }
+    }
+
+    .header-date {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+  }
+
+  /* Shared Card Title */
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    color: #0f5132;
+
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+  }
+
+  /* Supplier Card */
+  .supplier-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+
+    div {
+      label {
+        font-size: 12px;
+        color: #64748b;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 4px 0 0 0;
+        font-size: 15px;
+        font-weight: 600;
+        color: #1e293b;
+      }
+    }
+  }
+
+  /* Table Section */
+  .table-card {
+    padding: 20px;
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th {
+        background-color: #f8fafc;
+        color: #475569;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 12px;
+        border-bottom: 2px solid #e2e8f0;
+        text-align: left;
+      }
+
+      td {
+        padding: 14px 12px;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 14px;
+        color: #334155;
+
+        .product-name {
+          display: block;
+          font-weight: 600;
+          color: #0f172a;
+        }
+
+        .product-code {
+          font-size: 12px;
+          color: #94a3b8;
+        }
+
+        .badge-qty {
+          background-color: #f0fdf4;
+          color: #0f5132;
+          padding: 4px 10px;
+          border-radius: 12px;
+          font-weight: 600;
+          font-size: 13px;
+        }
+      }
+
+      .text-center { text-align: center; }
+      .text-right { text-align: right; }
+      .font-bold { font-weight: 700; }
+    }
+  }
+
+  /* Summary Section */
+  .summary-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 20px;
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+
+    .note-box {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 16px;
+
+      label {
+        font-weight: 700;
+        font-size: 13px;
+        color: #475569;
+      }
+
+      p {
+        margin: 6px 0 0 0;
+        font-size: 13px;
+        color: #64748b;
+        line-height: 1.5;
+      }
+    }
+
+    .summary-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        font-size: 14px;
+        color: #475569;
+
+        .text-success {
+          color: #16a34a;
+          font-weight: 600;
+        }
+
+        &.total-due {
+          border-top: 2px solid #f1f5f9;
+          margin-top: 8px;
+          padding-top: 12px;
+          font-size: 16px;
+          font-weight: 700;
+          color: #0f172a;
+
+          .text-danger {
+            color: #dc2626;
+          }
+        }
+      }
+    }
+  }
+}

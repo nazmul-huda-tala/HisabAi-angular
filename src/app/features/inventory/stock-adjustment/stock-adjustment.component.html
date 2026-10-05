@@ -1,0 +1,112 @@
+<section class="feature-page">
+  <header class="feature-page__header">
+    <div>
+      <a class="back-link" routerLink="/inventory"><app-icon name="arrow-left" [size]="15" /> ইনভেন্টরি</a>
+      <h2>Stock adjustment</h2>
+      <p>ড্যামেজ, হারানো, মেয়াদোত্তীর্ণ বা গণনার ভুলের জন্য স্টক ম্যানুয়ালি সমন্বয় করুন।</p>
+    </div>
+  </header>
+
+  @if (justSaved()) {
+    <div class="save-banner"><app-icon name="check" [size]="16" /> সমন্বয় সংরক্ষণ হয়েছে — নিয়ে যাওয়া হচ্ছে…</div>
+  }
+
+  <div class="adjustment-layout">
+    <form class="form-card" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <label class="field field--full">
+          <span>পণ্য <em>*</em></span>
+          <select formControlName="productId">
+            @for (item of items(); track item.id) {
+              <option [ngValue]="item.id">{{ item.name }} ({{ item.sku }})</option>
+            }
+          </select>
+        </label>
+
+        <label class="field field--full">
+          <span>ধরন <em>*</em></span>
+          <div class="direction-toggle">
+            <button
+              type="button"
+              class="direction-btn direction-btn--in"
+              [class.direction-btn--active]="f.direction.value === 'in'"
+              (click)="setDirection('in')"
+            >
+              <app-icon name="trending-up" [size]="16" /> Stock In (বৃদ্ধি)
+            </button>
+            <button
+              type="button"
+              class="direction-btn direction-btn--out"
+              [class.direction-btn--active]="f.direction.value === 'out'"
+              (click)="setDirection('out')"
+            >
+              <app-icon name="trending-down" [size]="16" /> Stock Out (হ্রাস)
+            </button>
+          </div>
+        </label>
+
+        <label class="field">
+          <span>পরিমাণ ({{ selectedItem?.unit }}) <em>*</em></span>
+          <input type="number" formControlName="quantity" min="1" step="1" />
+          @if (f.quantity.invalid && f.quantity.touched) {
+            <small class="field-error">কমপক্ষে ১ পরিমাণ দিন</small>
+          }
+        </label>
+
+        <label class="field">
+          <span>কারণ <em>*</em></span>
+          <select formControlName="reason">
+            @for (opt of reasonOptions; track opt) {
+              <option [ngValue]="opt">{{ reasonLabels[opt] }}</option>
+            }
+          </select>
+        </label>
+
+        <label class="field field--full">
+          <span>নোট @if (noteRequired) { <em>*</em> } @else { <small>(ঐচ্ছিক)</small> }</span>
+          <input type="text" formControlName="note" placeholder="যেমন: ৩টি প্যাকেট মেয়াদ শেষ হওয়ায় বাদ দেওয়া হয়েছে" />
+          @if (f.note.invalid && f.note.touched) {
+            <small class="field-error">কারণ 'অন্যান্য' নির্বাচন করলে নোট আবশ্যক</small>
+          }
+        </label>
+      </div>
+
+      <footer class="form-actions">
+        <a class="button-secondary" routerLink="/inventory">বাতিল</a>
+        <button type="submit" class="button-primary" [disabled]="justSaved()">
+          <app-icon name="check" [size]="16" /> সমন্বয় সংরক্ষণ করুন
+        </button>
+      </footer>
+    </form>
+
+    <aside class="preview-card">
+      <p class="preview-card__label">প্রিভিউ</p>
+      @if (selectedItem) {
+        <h3>{{ selectedItem.name }}</h3>
+        <p class="preview-card__sku">{{ selectedItem.sku }} · {{ selectedItem.category }}</p>
+
+        <div class="preview-row">
+          <span>বর্তমান Stock</span>
+          <strong>{{ formatCount(selectedItem.currentStock) }} {{ selectedItem.unit }}</strong>
+        </div>
+
+        <div class="preview-arrow" [class.preview-arrow--in]="f.direction.value === 'in'" [class.preview-arrow--out]="f.direction.value === 'out'">
+          <app-icon [name]="f.direction.value === 'in' ? 'trending-up' : 'trending-down'" [size]="18" />
+          <span>{{ f.direction.value === 'in' ? '+' : '−' }}{{ formatCount(f.quantity.value || 0) }} {{ selectedItem.unit }}</span>
+        </div>
+
+        <div class="preview-row preview-row--total">
+          <span>সমন্বয়ের পর Stock</span>
+          <strong>{{ formatCount(projectedStock) }} {{ selectedItem.unit }}</strong>
+        </div>
+
+        <div class="preview-row">
+          <span>Stock value (আনুমানিক)</span>
+          <strong>{{ formatTaka(projectedStock * selectedItem.unitCost) }}</strong>
+        </div>
+      } @else {
+        <p class="preview-card__empty">পণ্য নির্বাচন করুন</p>
+      }
+    </aside>
+  </div>
+</section>

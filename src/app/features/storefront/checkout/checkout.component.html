@@ -1,0 +1,52 @@
+<app-store-header />
+<section class="feature-page">
+  @if (placedOrderNo(); as orderNo) {
+    <div class="no-results">
+      <app-icon name="check" [size]="28" />
+      <h2>অর্ডার সফল হয়েছে!</h2>
+      <p>আপনার অর্ডার নং: <strong>{{ orderNo }}</strong></p>
+      <button type="button" class="button-primary" (click)="goHome()">হোমে ফিরে যান</button>
+    </div>
+  } @else if (cart.lines().length > 0) {
+    <header class="feature-page__header"><div><h2>চেকআউট</h2><p>ডেলিভারির তথ্য দিয়ে অর্ডার সম্পন্ন করুন।</p></div></header>
+    <div class="checkout-grid">
+      <form [formGroup]="form" (ngSubmit)="placeOrder()" class="checkout-form">
+        <label>নাম
+          <input type="text" formControlName="customerName" placeholder="আপনার নাম" />
+        </label>
+        <label>মোবাইল নম্বর
+          <input type="text" formControlName="customerPhone" placeholder="01XXXXXXXXX" />
+        </label>
+        <label>ডেলিভারি ঠিকানা
+          <textarea formControlName="shippingAddress" rows="3" placeholder="বাসা/রোড/এলাকা, শহর"></textarea>
+        </label>
+        <label>পেমেন্ট পদ্ধতি
+          <select formControlName="paymentMethod">
+            <option value="cod">ক্যাশ অন ডেলিভারি</option>
+            <option value="bkash">বিকাশ</option>
+            <option value="nagad">নগদ</option>
+            <option value="card">কার্ড</option>
+          </select>
+        </label>
+        <label>নোট (ঐচ্ছিক)
+          <textarea formControlName="note" rows="2" placeholder="বিশেষ কোনো নির্দেশনা থাকলে লিখুন"></textarea>
+        </label>
+        <button type="submit" class="button-primary">অর্ডার নিশ্চিত করুন — {{ formatTaka(total) }}</button>
+      </form>
+      <aside class="checkout-summary">
+        <h3>অর্ডার সারাংশ</h3>
+        @for (line of cart.lines(); track line.product.id) {
+          <div class="checkout-summary__row"><span>{{ line.product.name }} × {{ line.quantity }}</span><strong>{{ formatTaka(line.product.salePrice * line.quantity) }}</strong></div>
+        }
+        <div class="checkout-summary__row"><span>ডেলিভারি ফি</span><strong>{{ formatTaka(deliveryFee) }}</strong></div>
+        <div class="checkout-summary__row checkout-summary__total"><span>সর্বমোট</span><strong>{{ formatTaka(total) }}</strong></div>
+      </aside>
+    </div>
+  } @else {
+    <div class="no-results">
+      <app-icon name="cart" [size]="28" />
+      <p>আপনার কার্ট খালি।</p>
+      <a class="button-secondary" routerLink="/store/products">পণ্য দেখুন</a>
+    </div>
+  }
+</section>

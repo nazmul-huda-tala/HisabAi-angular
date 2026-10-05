@@ -1,0 +1,59 @@
+@if (product(); as p) {
+  <section class="feature-page">
+    <header class="feature-page__header">
+      <div>
+        <a class="back-link" routerLink="/products"><app-icon name="arrow-left" [size]="15" /> পণ্য তালিকা</a>
+        <h2>{{ p.name }}</h2>
+        <p>SKU: {{ p.sku }} &middot; Barcode: {{ p.barcode }}</p>
+      </div>
+      <a class="button-primary" [routerLink]="['/products', p.id, 'edit']"><app-icon name="edit-2" [size]="15" /> সম্পাদনা</a>
+    </header>
+
+    <div class="metric-row">
+      <article class="metric-card">
+        <p>বিক্রয় মূল্য</p>
+        <strong>{{ formatTaka(p.salePrice) }}</strong>
+        <small>ক্রয় মূল্য {{ formatTaka(p.costPrice) }}</small>
+      </article>
+      <article class="metric-card">
+        <p>মুনাফার হার</p>
+        <strong>{{ formatCount(marginPercent()) }}%</strong>
+        <small>প্রতি ইউনিট</small>
+      </article>
+      <article class="metric-card">
+        <p>স্টকের মূল্য</p>
+        <strong>{{ formatTaka(stockValue()) }}</strong>
+        <small>{{ formatCount(p.stock) }} {{ p.unit }} &#64; ক্রয়মূল্যে</small>
+      </article>
+    </div>
+
+    <section class="data-panel">
+      <div class="data-panel__toolbar">
+        <p>পণ্যের বিবরণ</p>
+        <span class="status" [class.status--warning]="p.status === 'inactive'">{{ statusLabels[p.status] }}</span>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-row"><span>ক্যাটাগরি</span><strong>{{ p.category }}</strong></div>
+        <div class="detail-row"><span>ব্র্যান্ড</span><strong>{{ p.brand }}</strong></div>
+        <div class="detail-row"><span>একক</span><strong>{{ p.unit }}</strong></div>
+        <div class="detail-row"><span>বর্তমান স্টক</span><strong>{{ formatCount(p.stock) }} {{ p.unit }}</strong></div>
+        <div class="detail-row"><span>রিঅর্ডার লেভেল</span><strong>{{ formatCount(p.reorderLevel) }} {{ p.unit }}</strong></div>
+        <div class="detail-row"><span>ট্যাক্স রেট</span><strong>{{ formatCount(p.taxRate) }}%</strong></div>
+      </div>
+      @if (p.description) {
+        <p class="description-text">{{ p.description }}</p>
+      }
+      <div class="stock-bar">
+        <div class="stock-bar__fill" [style.width.%]="stockUsagePercent()"></div>
+      </div>
+    </section>
+  </section>
+} @else {
+  <section class="feature-page">
+    <div class="no-results">
+      <app-icon name="box" [size]="28" />
+      <p>পণ্য পাওয়া যায়নি।</p>
+      <a class="button-secondary" routerLink="/products"><app-icon name="arrow-left" [size]="15" /> তালিকায় ফিরে যান</a>
+    </div>
+  </section>
+}

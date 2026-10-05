@@ -1,0 +1,33 @@
+<app-store-header />
+<section class="feature-page">
+  <header class="feature-page__header"><div><h2>কার্ট</h2><p>অর্ডার করার আগে পণ্য ও পরিমাণ চেক করে নিন।</p></div></header>
+
+  @if (cart.lines().length > 0) {
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>পণ্য</th><th>দাম</th><th>পরিমাণ</th><th>মোট</th><th></th></tr></thead>
+        <tbody>
+          @for (line of cart.lines(); track line.product.id) {
+            <tr>
+              <td><strong>{{ line.product.name }}</strong></td>
+              <td>{{ formatTaka(line.product.salePrice) }}</td>
+              <td><input type="number" min="1" class="search-box" style="width:70px" [value]="line.quantity" (input)="setQuantity(line.product.id, $event)" /></td>
+              <td><strong>{{ formatTaka(line.product.salePrice * line.quantity) }}</strong></td>
+              <td><button type="button" class="link-btn" (click)="remove(line.product.id)"><app-icon name="x" [size]="16" /></button></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="metric-row">
+      <article class="metric-card"><p>সাবটোটাল</p><strong>{{ formatTaka(cart.subtotal()) }}</strong></article>
+    </div>
+    <a class="button-primary" routerLink="/store/checkout">চেকআউট করুন <app-icon name="arrow-up-right" [size]="15" /></a>
+  } @else {
+    <div class="no-results">
+      <app-icon name="cart" [size]="28" />
+      <p>আপনার কার্ট খালি।</p>
+      <a class="button-secondary" routerLink="/store/products">পণ্য দেখুন</a>
+    </div>
+  }
+</section>

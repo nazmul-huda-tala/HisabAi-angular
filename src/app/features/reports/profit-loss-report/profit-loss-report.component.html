@@ -1,0 +1,49 @@
+<section class="feature-page report-page">
+  <header class="feature-page__header report-header">
+    <div>
+      <div class="eyebrow"><app-icon name="trending-up" [size]="15" /> REPORTS / PROFIT &amp; LOSS</div>
+      <h2>Profit &amp; loss</h2>
+      <p>Revenue, cost এবং operating expense মিলিয়ে ব্যবসার আসল ফলাফল দেখুন।</p>
+    </div>
+    <div class="header-actions"><button type="button" class="button-secondary" (click)="printReport()"><app-icon name="file-text" [size]="16" /> Print</button><button type="button" class="button-primary" (click)="exportCsv()"><app-icon name="arrow-down" [size]="16" /> Export CSV</button></div>
+  </header>
+
+  @if (notice) { <div class="report-notice">{{ notice }}</div> }
+
+  <section class="filter-panel">
+    <div class="filter-title"><span>Report period</span><small>Income statement-এর সময় বাছাই করুন</small></div>
+    <label>From <input type="date" [(ngModel)]="fromDate" /></label>
+    <label>To <input type="date" [(ngModel)]="toDate" /></label>
+    <label>Type <select [(ngModel)]="typeFilter"><option value="All">Income + expense</option><option value="Income">Income only</option><option value="Expense">Expense only</option></select></label>
+    <button type="button" class="filter-reset" (click)="resetFilters()">Reset</button>
+  </section>
+
+  <div class="metric-row report-metrics">
+    <article class="metric-card metric-card--income"><p>Total income</p><strong>{{ formatMoney(income) }}</strong><small>Sales revenue</small></article>
+    <article class="metric-card metric-card--expense"><p>Total expense</p><strong>{{ formatMoney(expenses) }}</strong><small>COGS + operating costs</small></article>
+    <article class="metric-card metric-card--primary"><p>Net profit</p><strong>{{ formatMoney(netProfit) }}</strong><small>Income − expense</small></article>
+    <article class="metric-card"><p>Profit margin</p><strong>{{ margin | number:'1.1-1' }}%</strong><small>Net profit / income</small></article>
+  </div>
+
+  <div class="report-grid">
+    <section class="report-card profit-summary">
+      <div class="card-heading"><div><h3>Income statement</h3><p>এই period-এর financial summary</p></div><span class="profit-pill" [class.profit-pill--loss]="netProfit < 0">{{ netProfit < 0 ? 'Loss' : 'Profitable' }}</span></div>
+      <div class="statement-row statement-row--income"><span><i></i> Total income</span><strong>{{ formatMoney(income) }}</strong></div>
+      <div class="statement-row statement-row--expense"><span><i></i> Total expense</span><strong>{{ formatMoney(expenses) }}</strong></div>
+      <div class="statement-divider"></div>
+      <div class="statement-row statement-row--net"><span>Net {{ netProfit < 0 ? 'loss' : 'profit' }}</span><strong>{{ formatMoney(netProfit) }}</strong></div>
+      <div class="profit-track"><span [style.width.%]="income ? Math.min(Math.max(margin, 0), 100) : 0"></span></div><small class="track-note">Profit margin {{ margin | number:'1.1-1' }}%</small>
+    </section>
+    <section class="report-card chart-card">
+      <div class="card-heading"><div><h3>Expense breakdown</h3><p>খরচের প্রধান category</p></div><app-icon name="layers" [size]="19" /></div>
+      <div class="breakdown-list">@for (item of breakdown; track item.label) { <div class="breakdown-item"><div><span>{{ item.label }}</span><strong>{{ formatMoney(item.value) }}</strong></div><div class="breakdown-track"><i class="breakdown-bar" [class.breakdown-bar--amber]="item.tone === 'amber'" [class.breakdown-bar--red]="item.tone === 'red'" [style.width.%]="item.value / maxBreakdown * 100"></i></div></div> }</div>
+    </section>
+  </div>
+
+  <section class="report-card table-card">
+    <div class="card-heading table-heading"><div><h3>Income &amp; expense entries</h3><p>{{ rows.length }}টি result দেখানো হচ্ছে</p></div><input class="search-box" type="search" [(ngModel)]="searchTerm" placeholder="Description বা category খুঁজুন" aria-label="Search profit and loss report" /></div>
+    <div class="table-wrap"><table class="data-table report-table"><thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Type</th><th class="amount-cell">Amount</th></tr></thead><tbody>
+      @for (row of rows; track row.id) { <tr><td>{{ formatDate(row.date) }}</td><td><strong>{{ row.description }}</strong></td><td>{{ row.category }}</td><td><span class="status" [class.status--danger]="row.type === 'Expense'">{{ row.type }}</span></td><td class="amount-cell" [class.amount--expense]="row.type === 'Expense'"><strong>{{ row.type === 'Expense' ? '-' : '+' }}{{ formatMoney(row.amount) }}</strong></td></tr> } @empty { <tr><td colspan="5" class="empty-row">এই filter-এ কোনো entry পাওয়া যায়নি।</td></tr> }
+    </tbody></table></div>
+  </section>
+</section>

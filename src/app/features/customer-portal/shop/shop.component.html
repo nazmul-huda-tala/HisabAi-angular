@@ -1,0 +1,63 @@
+<section class="shop-page">
+  <div class="shop-head">
+    <div>
+      <span>ONLINE SHOP</span>
+      <h2>পণ্য কিনুন</h2>
+      <p>আপনার প্রয়োজনীয় পণ্য বেছে নিয়ে কার্টে যোগ করুন।</p>
+    </div>
+    <div class="cart-summary">🛒 <strong>{{ portal.cartCount() }}</strong>টি পণ্য · <strong>{{ formatTaka(portal.cartTotal()) }}</strong></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search"><span>⌕</span><input type="search" placeholder="পণ্যের নাম দিয়ে খুঁজুন..." (input)="search($event)" /></div>
+    <div class="categories">
+      @for (category of categories; track category) {
+        <button type="button" [class.active]="selectedCategory() === category" (click)="selectCategory(category)">{{ category }}</button>
+      }
+    </div>
+  </div>
+
+  <div class="shop-layout">
+    <div class="product-grid">
+      @for (product of filteredProducts(); track product.id) {
+        <article class="product-card">
+          <div class="product-card__image">
+            @if (product.badge) { <span class="badge">{{ product.badge }}</span> }
+            <img [src]="product.imageUrl" [alt]="product.name" loading="lazy" />
+          </div>
+          <div class="product-card__body">
+            <small>{{ product.category }} · {{ product.unit }}</small>
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.description }}</p>
+            <div class="product-bottom">
+              <div><strong>{{ formatTaka(product.price) }}</strong>@if(product.oldPrice){<del>{{ formatTaka(product.oldPrice) }}</del>}</div>
+              <button type="button" [disabled]="product.stock === 0" (click)="add(product.id)">{{ product.stock ? '+ কার্ট' : 'স্টক নেই' }}</button>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+
+    <aside class="cart-panel">
+      <div class="cart-panel__head"><h3>আপনার কার্ট</h3><span>{{ portal.cartCount() }}টি</span></div>
+      @if (portal.cartItems().length === 0) {
+        <div class="empty-cart"><div>🛒</div><strong>কার্ট খালি</strong><p>পণ্য থেকে “+ কার্ট” চাপুন।</p></div>
+      } @else {
+        <div class="cart-list">
+          @for (item of portal.cartItems(); track item.product.id) {
+            <div class="cart-item">
+              <img [src]="item.product.imageUrl" [alt]="item.product.name" />
+              <div class="cart-item__info"><strong>{{ item.product.name }}</strong><span>{{ formatTaka(item.product.price) }}</span>
+                <div class="qty"><button (click)="decrease(item.product.id)">−</button><b>{{ item.quantity }}</b><button (click)="increase(item.product.id)">+</button><button class="remove" (click)="remove(item.product.id)">×</button></div>
+              </div>
+              <strong>{{ formatTaka(item.total) }}</strong>
+            </div>
+          }
+        </div>
+        <div class="cart-total"><span>মোট</span><strong>{{ formatTaka(portal.cartTotal()) }}</strong></div>
+        <button type="button" class="checkout" (click)="checkoutMessage()">অর্ডার কনফার্ম করুন</button>
+        <button type="button" class="clear" (click)="portal.clearCart()">কার্ট খালি করুন</button>
+      }
+    </aside>
+  </div>
+</section>

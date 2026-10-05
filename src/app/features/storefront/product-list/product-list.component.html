@@ -1,0 +1,21 @@
+<app-store-header />
+<section class="store-section">
+  <div class="store-toolbar">
+    <h2>সব পণ্য</h2>
+    <input class="search-box" placeholder="পণ্য খুঁজুন" [value]="searchTerm()" (input)="onSearch($event)" />
+  </div>
+  <div class="store-grid">
+    @for (p of filtered(); track p.id) {
+      <article class="store-card">
+        <a [routerLink]="[p.id]"><img [src]="p.imageUrl" [alt]="p.name" /></a>
+        <div class="store-card__body">
+          <a [routerLink]="[p.id]"><strong>{{ p.name }}</strong></a>
+          <p>{{ formatTaka(p.salePrice) }} <small>/ {{ p.unit }}</small></p>
+          <button type="button" class="button-secondary" (click)="addToCart(p.id)"><app-icon name="cart" [size]="14" /> কার্টে যুক্ত করুন</button>
+        </div>
+      </article>
+    } @empty {
+      <p>কোনো পণ্য পাওয়া যায়নি।</p>
+    }
+  </div>
+</section>
